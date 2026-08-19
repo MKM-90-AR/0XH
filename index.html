@@ -111,19 +111,19 @@
         #bgCanvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
 
         .watermark {
-            position: fixed; bottom: 15px; left: 50%; transform: translateX(-50%);
             z-index: 50; padding: 10px 20px; border-radius: 9999px;
             font-size: 0.9rem; font-weight: 600; text-decoration: none;
             background: linear-gradient(90deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.2) 50%, rgba(255,255,255,0.1) 100%);
             background-size: 200% auto; border: 1px solid rgba(255,255,255,0.2);
-            backdrop-filter: blur(10px); display: flex; align-items: center; gap: 8px;
+            backdrop-filter: blur(10px); display: inline-flex; align-items: center; gap: 8px;
             transition: all 0.3s;
+            margin-top: auto; margin-bottom: 24px;
         }
         html:not(.dark) .watermark {
             background: linear-gradient(90deg, rgba(0,0,0,0.05) 0%, rgba(0,0,0,0.1) 50%, rgba(0,0,0,0.05) 100%);
             border: 1px solid rgba(0,0,0,0.1); color: #333;
         }
-        .watermark:hover { transform: translateX(-50%) scale(1.05); }
+        .watermark:hover { transform: scale(1.05); }
         .shimmer-text {
             background-clip: text; -webkit-background-clip: text;
             background-image: linear-gradient(90deg, #10b981 0%, #34d399 50%, #10b981 100%);
@@ -152,17 +152,17 @@
         </div>
     </div>
 
-    <!-- أزرار التحكم العلوية (ثابتة دائماً ولا تتأثر بتغيير اللغة) -->
-    <div dir="ltr" class="fixed top-4 right-4 left-4 z-50 flex justify-between items-center max-w-2xl mx-auto">
+    <!-- أزرار التحكم العلوية (تتحرك مع الصفحة) -->
+    <div dir="ltr" class="absolute top-4 w-full px-4 z-50 flex justify-between items-center max-w-2xl mx-auto">
         <button id="langToggle" class="glass-panel px-4 py-2 rounded-full font-bold hover:bg-white/10 transition-colors shadow-lg">EN</button>
         <button id="themeToggle" class="glass-panel p-3 rounded-full hover:bg-white/10 transition-colors shadow-lg">
             <svg id="moonIcon" class="w-6 h-6 text-yellow-300 hidden" fill="currentColor" viewBox="0 0 20 20"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path></svg>
-            <svg id="sunIcon" class="w-6 h-6 text-yellow-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4.22 2.366a1 1 0 011.415 0l.707.707a1 1 0 01-1.414 1.415l-.707-.707a1 1 0 010-1.415zM18 10a1 1 0 01-1 1h-1a1 1 0 110-2h1a1 1 0 011 1zm-4.22 4.22a1 1 0 010 1.415l-.707.707a1 1 0 01-1.415-1.414l.707-.707a1 1 0 011.415 0zM10 16a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zm-4.22-2.366a1 1 0 01-1.415 0l-.707-.707a1 1 0 011.414-1.415l.707.707a1 1 0 010 1.415zM2 10a1 1 0 011-1h1a1 1 0 110 2H3a1 1 0 01-1-1zm2.366-4.22a1 1 0 010-1.415l.707-.707a1 1 0 011.415 1.414l-.707.707a1 1 0 01-1.415 0zM10 6a4 4 0 100 8 4 4 0 000-8z" clip-rule="evenodd"></path></svg>
+            <svg id="sunIcon" class="w-6 h-6 text-yellow-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4.22 2.366a1 1 0 011.415 0l.707.707a1 1 0 01-1.414 1.415l-.707-.707a1 1 0 010-1.415zM18 10a1 1 0 01-1 1h-1a1 1 0 110-2h1a1 1 0 110-2h1a1 1 0 011 1zm-4.22 4.22a1 1 0 010 1.415l-.707.707a1 1 0 01-1.415-1.414l.707-.707a1 1 0 011.415 0zM10 16a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zm-4.22-2.366a1 1 0 01-1.415 0l-.707-.707a1 1 0 011.414-1.415l.707.707a1 1 0 010 1.415zM2 10a1 1 0 011-1h1a1 1 0 110 2H3a1 1 0 01-1-1zm2.366-4.22a1 1 0 010-1.415l.707-.707a1 1 0 011.415 1.414l-.707.707a1 1 0 01-1.415 0zM10 6a4 4 0 100 8 4 4 0 000-8z" clip-rule="evenodd"></path></svg>
         </button>
     </div>
 
     <!-- الواجهة الرئيسية للموقع -->
-    <main id="mainView" class="w-full max-w-md p-6 mt-20 mb-28 relative z-10 flex flex-col items-center">
+    <main id="mainView" class="w-full max-w-md p-6 mt-20 mb-8 relative z-10 flex flex-col items-center">
         <!-- Main Card -->
         <div class="glass-panel rounded-3xl p-8 w-full flex flex-col items-center animate-float">
             
@@ -223,7 +223,7 @@
     </main>
 
     <!-- صفحة المساعدة (مخفية افتراضياً) -->
-    <div id="helpView" class="hidden w-full max-w-md p-6 mt-20 mb-28 relative z-10 flex flex-col items-center">
+    <div id="helpView" class="hidden w-full max-w-md p-6 mt-20 mb-8 relative z-10 flex flex-col items-center">
         <div class="glass-panel rounded-3xl p-8 w-full">
             <button id="closeHelpBtn" class="mb-4 text-primary hover:text-emerald-400 flex items-center gap-2 transition-colors">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
@@ -233,6 +233,12 @@
             <div id="helpContent" class="space-y-4 text-sm leading-relaxed dark:text-gray-300 text-gray-700">
                 <!-- المحتوى يملأ من الجافاسكربت -->
             </div>
+
+            <!-- الزر الجديد في أسفل صفحة المساعدة -->
+            <button id="closeHelpBtnBottom" class="mt-8 w-full py-3 rounded-xl bg-gradient-to-r from-primary to-emerald-500 hover:from-emerald-500 hover:to-primary text-white font-bold text-lg shadow-lg hover:shadow-primary/50 transform hover:-translate-y-1 transition-all flex justify-center items-center gap-2">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+                <span id="helpBackBottomText">عودة للرئيسية</span>
+            </button>
         </div>
     </div>
 
@@ -417,6 +423,7 @@
 
             document.getElementById('helpBtnText').textContent = t.helpBtn;
             document.getElementById('helpBack').textContent = t.helpBack;
+            document.getElementById('helpBackBottomText').textContent = t.helpBack;
             document.getElementById('helpTitle').textContent = t.helpPageTitle;
             document.getElementById('helpContent').innerHTML = t.helpContent;
             
@@ -650,6 +657,7 @@
         window.addEventListener('hashchange', handleRouting);
         document.getElementById('openHelpBtn').addEventListener('click', () => { window.location.hash = 'help'; });
         document.getElementById('closeHelpBtn').addEventListener('click', () => { window.location.hash = ''; });
+        document.getElementById('closeHelpBtnBottom').addEventListener('click', () => { window.location.hash = ''; });
 
         // --- Canvas Animation ---
         const canvas = document.getElementById('bgCanvas');

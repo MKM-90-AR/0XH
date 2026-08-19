@@ -300,6 +300,15 @@
             // Clean the number: remove spaces, pluses, dashes, parentheses
             let cleanNumber = rawNumber.replace(/[\s\+\-\(\)]/g, '');
             
+            // التعرف الذكي على الأرقام الأردنية والصيغة الدولية
+            if (cleanNumber.startsWith('07')) {
+                // تحويل أي رقم يبدأ بـ 07 إلى 9627
+                cleanNumber = '962' + cleanNumber.substring(1);
+            } else if (cleanNumber.startsWith('00')) {
+                // إزالة الأصفار المزدوجة من البداية (مثال: 00962 تصبح 962)
+                cleanNumber = cleanNumber.substring(2);
+            }
+            
             if (!cleanNumber || isNaN(cleanNumber)) {
                 // simple shake animation for error
                 sendBtn.classList.add('animate-pulse');

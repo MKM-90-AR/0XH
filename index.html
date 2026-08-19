@@ -3,555 +3,700 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>0xh WhatsApp</title>
-    
+    <title>0xh واتساب</title>
+    <!-- أيقونة الموقع -->
+    <link rel="icon" href="0XH.jpg" type="image/jpeg">
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- Tailwind Config for Custom Colors -->
     <script>
         tailwind.config = {
             darkMode: 'class',
             theme: {
                 extend: {
-                    colors: {
-                        primary: '#10b981', // Emerald 500
-                        primaryDark: '#047857', // Emerald 700
-                        darkBg: '#0f172a', // Slate 900
-                        lightBg: '#f8fafc', // Slate 50
+                    colors: { primary: '#10b981' },
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                        'shimmer': 'shimmer 2.5s infinite linear',
+                        'spin-slow': 'spin 4s linear infinite',
                     },
-                    fontFamily: {
-                        sans: ['system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Open Sans', 'Helvetica Neue', 'sans-serif'],
+                    keyframes: {
+                        float: { '0%, 100%': { transform: 'translateY(0)' }, '50%': { transform: 'translateY(-10px)' } },
+                        shimmer: { '0%': { backgroundPosition: '-200% center' }, '100%': { backgroundPosition: '200% center' } }
                     }
                 }
             }
         }
     </script>
-
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
-        /* --- General Utilities --- */
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        .hide { display: none !important; }
-        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
-        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(156, 163, 175, 0.5); border-radius: 10px; }
-        
-        /* --- Glassmorphism --- */
+        body {
+            font-family: 'Cairo', sans-serif;
+            margin: 0; padding: 0;
+            overflow-x: hidden;
+            background-color: #0f172a; /* Dark default */
+            color: #f8fafc;
+            transition: background-color 0.5s ease;
+        }
+        html:not(.dark) body {
+            background-color: #f0fdf4; /* Light default */
+            color: #0f172a;
+        }
+
+        /* Glassmorphism Classes */
         .glass-panel {
-            background: rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.05);
             backdrop-filter: blur(16px);
             -webkit-backdrop-filter: blur(16px);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            transition: background 0.3s ease, border-color 0.3s ease;
         }
-        .dark .glass-panel {
-            background: rgba(15, 23, 42, 0.4);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
-        }
-
-        /* --- Animations --- */
-        .animate-float {
-            animation: float 6s ease-in-out infinite;
-        }
-        @keyframes float {
-            0% { transform: translateY(0px); }
-            50% { transform: translateY(-10px); }
-            100% { transform: translateY(0px); }
-        }
-        
-        .fade-in { animation: fadeIn 0.4s ease forwards; }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+        html:not(.dark) .glass-panel {
+            background: rgba(255, 255, 255, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1);
         }
 
-        /* --- Celestial Bodies (Sun & Moon) --- */
         .celestial-container {
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            pointer-events: none;
-            z-index: 0;
-            overflow: hidden;
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            pointer-events: none; z-index: 0; overflow: hidden;
         }
         .celestial-body {
-            position: absolute;
+            position: absolute; left: 50%;
             border-radius: 50%;
-            transition: all 1.5s cubic-bezier(0.4, 0, 0.2, 1);
-            left: 50%;
-            transform: translateX(-50%);
-        }
-        
-        /* Sun (Light Mode) */
-        .sun-state {
-            top: 10%;
-            width: 150px; height: 150px;
-            background: radial-gradient(circle, #fef08a 0%, #f59e0b 100%);
-            box-shadow: 0 0 60px #fef08a, 0 0 100px #eab308, 0 0 150px rgba(245, 158, 11, 0.5);
-            opacity: 1;
-        }
-        .dark .sun-state { top: -30%; opacity: 0; }
-        
-        /* Moon (Dark Mode) */
-        .moon-state {
-            top: -30%; opacity: 0;
-            width: 120px; height: 120px;
-            background: radial-gradient(circle at 30% 30%, #f8fafc 0%, #94a3b8 100%);
-            box-shadow: inset -15px -15px 25px rgba(0,0,0,0.4), 0 0 40px rgba(255,255,255,0.3);
-        }
-        .dark .moon-state { top: 15%; opacity: 1; }
-        
-        /* --- Shimmer Text Effect --- */
-        .animate-shimmer-text {
-            background: linear-gradient(to right, #64748b 20%, #0f172a 40%, #0f172a 60%, #64748b 80%);
-            background-size: 200% auto;
-            color: transparent;
-            -webkit-background-clip: text;
-            background-clip: text;
-            animation: shimmer 3s linear infinite;
-        }
-        .dark .animate-shimmer-text {
-            background: linear-gradient(to right, #94a3b8 20%, #f8fafc 40%, #f8fafc 60%, #94a3b8 80%);
-            background-size: 200% auto;
-            color: transparent;
-            -webkit-background-clip: text;
-            background-clip: text;
-            animation: shimmer 3s linear infinite;
-        }
-        @keyframes shimmer {
-            to { background-position: 200% center; }
         }
 
-        #bg-canvas {
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            z-index: -1;
-            pointer-events: none;
+        /* الشمس (Sun) */
+        .sun-state {
+            width: 120px; height: 120px;
+            background: radial-gradient(circle, #fcd34d 0%, #f59e0b 100%);
+            box-shadow: 0 0 60px #f59e0b, 0 0 100px #fcd34d inset;
+            opacity: 0; transform: translate(-50%, 100vh);
         }
+        .sun-ray {
+            position: absolute; top: 50%; left: 50%;
+            width: 160px; height: 160px;
+            background: radial-gradient(circle, rgba(253,230,138,0.4) 0%, transparent 60%);
+            transform: translate(-50%, -50%);
+            border-radius: 50%;
+            animation: pulse-ray 3s infinite alternate;
+        }
+
+        /* القمر (Moon) */
+        .moon-state {
+            width: 100px; height: 100px;
+            background: radial-gradient(circle, #e2e8f0 0%, #94a3b8 100%);
+            box-shadow: 0 0 40px rgba(255, 255, 255, 0.3), inset -15px -15px 25px rgba(0,0,0,0.3);
+            opacity: 1; transform: translate(-50%, 15vh);
+        }
+        .crater { position: absolute; background: rgba(0,0,0,0.15); border-radius: 50%; box-shadow: inset 2px 2px 5px rgba(0,0,0,0.2); }
+        .crater-1 { width: 25px; height: 25px; top: 20%; left: 25%; }
+        .crater-2 { width: 15px; height: 15px; top: 50%; left: 60%; }
+        .crater-3 { width: 35px; height: 35px; top: 60%; left: 20%; }
+        .crater-4 { width: 10px; height: 10px; top: 30%; left: 75%; }
+
+        @keyframes pulse-ray { 0% { transform: translate(-50%, -50%) scale(1); opacity: 0.5; } 100% { transform: translate(-50%, -50%) scale(1.3); opacity: 1; } }
+
+        /* حركات النزول والهبوط كما طلبت تماماً */
+        @keyframes slideDownOut {
+            0% { transform: translate(-50%, 15vh) scale(1); opacity: 1; }
+            100% { transform: translate(-50%, 100vh) scale(0.5); opacity: 0; }
+        }
+        @keyframes slideDownIn {
+            0% { transform: translate(-50%, -50vh) scale(0.5); opacity: 0; }
+            100% { transform: translate(-50%, 15vh) scale(1); opacity: 1; }
+        }
+
+        #bgCanvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
+
+        .watermark {
+            position: fixed; bottom: 15px; left: 50%; transform: translateX(-50%);
+            z-index: 50; padding: 10px 20px; border-radius: 9999px;
+            font-size: 0.9rem; font-weight: 600; text-decoration: none;
+            background: linear-gradient(90deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.2) 50%, rgba(255,255,255,0.1) 100%);
+            background-size: 200% auto; border: 1px solid rgba(255,255,255,0.2);
+            backdrop-filter: blur(10px); display: flex; align-items: center; gap: 8px;
+            transition: all 0.3s;
+        }
+        html:not(.dark) .watermark {
+            background: linear-gradient(90deg, rgba(0,0,0,0.05) 0%, rgba(0,0,0,0.1) 50%, rgba(0,0,0,0.05) 100%);
+            border: 1px solid rgba(0,0,0,0.1); color: #333;
+        }
+        .watermark:hover { transform: translateX(-50%) scale(1.05); }
+        .shimmer-text {
+            background-clip: text; -webkit-background-clip: text;
+            background-image: linear-gradient(90deg, #10b981 0%, #34d399 50%, #10b981 100%);
+            background-size: 200% auto; animation: shimmer 2.5s infinite linear; color: transparent;
+        }
+
+        /* Custom Scrollbar for history */
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(16, 185, 129, 0.5); border-radius: 10px; }
     </style>
 </head>
+<body class="antialiased min-h-screen flex flex-col items-center">
 
-<body class="bg-lightBg dark:bg-darkBg text-slate-800 dark:text-slate-200 min-h-screen flex flex-col items-center justify-center relative transition-colors duration-500 pb-24">
-    
-    <!-- Canvas for Particle Background -->
-    <canvas id="bg-canvas"></canvas>
+    <!-- الخلفية التفاعلية -->
+    <canvas id="bgCanvas"></canvas>
 
-    <!-- Celestial Backgrounds (Sun / Moon) -->
+    <!-- الأجرام السماوية (الشمس والقمر) -->
     <div class="celestial-container">
-        <div class="celestial-body sun-state"></div>
-        <div class="celestial-body moon-state"></div>
+        <div id="sun" class="celestial-body sun-state">
+            <div class="sun-ray"></div>
+        </div>
+        <div id="moon" class="celestial-body moon-state">
+            <div class="crater crater-1"></div><div class="crater crater-2"></div>
+            <div class="crater crater-3"></div><div class="crater crater-4"></div>
+        </div>
     </div>
 
-    <!-- Top Controls: Settings (Fixed & High Z-Index to avoid overlap) -->
-    <div class="fixed top-4 right-4 rtl:left-4 rtl:right-auto flex gap-3 z-50 glass-panel p-2 rounded-full shadow-lg">
-        <button id="themeToggle" class="p-2 rounded-full hover:bg-slate-200 dark:hover:bg-slate-700 transition" aria-label="Toggle Theme">
-            <!-- Moon Icon -->
-            <svg id="moonIcon" class="w-6 h-6 text-slate-700 dark:text-slate-300 hidden dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
-            <!-- Sun Icon -->
-            <svg id="sunIcon" class="w-6 h-6 text-slate-700 dark:text-slate-300 block dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
-        </button>
-        <button id="langToggle" class="p-2 rounded-full hover:bg-slate-200 dark:hover:bg-slate-700 font-bold text-sm transition w-10 h-10 flex items-center justify-center">
-            EN
+    <!-- أزرار التحكم العلوية (ثابتة دائماً ولا تتأثر بتغيير اللغة) -->
+    <div dir="ltr" class="fixed top-4 right-4 left-4 z-50 flex justify-between items-center max-w-2xl mx-auto">
+        <button id="langToggle" class="glass-panel px-4 py-2 rounded-full font-bold hover:bg-white/10 transition-colors shadow-lg">EN</button>
+        <button id="themeToggle" class="glass-panel p-3 rounded-full hover:bg-white/10 transition-colors shadow-lg">
+            <svg id="moonIcon" class="w-6 h-6 text-yellow-300 hidden" fill="currentColor" viewBox="0 0 20 20"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path></svg>
+            <svg id="sunIcon" class="w-6 h-6 text-yellow-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4.22 2.366a1 1 0 011.415 0l.707.707a1 1 0 01-1.414 1.415l-.707-.707a1 1 0 010-1.415zM18 10a1 1 0 01-1 1h-1a1 1 0 110-2h1a1 1 0 011 1zm-4.22 4.22a1 1 0 010 1.415l-.707.707a1 1 0 01-1.415-1.414l.707-.707a1 1 0 011.415 0zM10 16a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zm-4.22-2.366a1 1 0 01-1.415 0l-.707-.707a1 1 0 011.414-1.415l.707.707a1 1 0 010 1.415zM2 10a1 1 0 011-1h1a1 1 0 110 2H3a1 1 0 01-1-1zm2.366-4.22a1 1 0 010-1.415l.707-.707a1 1 0 011.415 1.414l-.707.707a1 1 0 01-1.415 0zM10 6a4 4 0 100 8 4 4 0 000-8z" clip-rule="evenodd"></path></svg>
         </button>
     </div>
 
-    <!-- Main Content Container -->
-    <main class="w-full max-w-md p-6 relative z-10 flex flex-col items-center">
+    <!-- الواجهة الرئيسية للموقع -->
+    <main id="mainView" class="w-full max-w-md p-6 mt-20 mb-28 relative z-10 flex flex-col items-center">
         <!-- Main Card -->
-        <div class="glass-panel rounded-3xl p-8 w-full flex flex-col items-center animate-float" style="animation-duration: 8s;">
+        <div class="glass-panel rounded-3xl p-8 w-full flex flex-col items-center animate-float">
             
-            <!-- Logo (Loads 0xh.png, falls back to styled text if not found) -->
-            <img src="0xh.png" alt="0xh" 
-                onerror="this.outerHTML='<div class=\'w-24 h-24 bg-primary/20 rounded-full flex items-center justify-center text-primary font-bold text-3xl shadow-lg border-2 border-primary/30 mb-4\'>0xh</div>'" 
-                class="w-24 h-24 rounded-full object-cover shadow-lg border-2 border-primary/30 mb-4 z-10 relative">
+            <!-- الشعار الدائري مع التأثيرات الخضراء -->
+            <div class="relative flex items-center justify-center w-36 h-36 mb-6 z-10 group cursor-pointer">
+                <!-- نبض خارجي أخضر -->
+                <div class="absolute inset-0 bg-emerald-500/40 rounded-full animate-ping opacity-50"></div>
+                <!-- الدائرة الخضراء الخلفية المضيئة -->
+                <div class="absolute inset-0 bg-gradient-to-br from-primary to-emerald-400 rounded-full shadow-[0_0_35px_rgba(16,185,129,0.5)] transition-transform duration-500 group-hover:scale-110"></div>
+                <!-- الصورة الدائرية بحدود زجاجية -->
+                <img src="0XH.jpg" alt="0xh Logo" class="relative w-[120px] h-[120px] rounded-full object-cover border-4 border-white/30 shadow-inner z-10 transition-transform duration-700 group-hover:rotate-[360deg] bg-white" 
+                     onerror="this.outerHTML='<div class=\'relative w-[120px] h-[120px] rounded-full flex items-center justify-center text-white font-bold text-4xl border-4 border-white/30 shadow-inner z-10 bg-gradient-to-br from-green-500 to-emerald-700\'>0xh</div>'">
+            </div>
 
             <h1 id="appTitle" class="text-3xl font-extrabold mb-1 bg-clip-text text-transparent bg-gradient-to-r from-primary to-emerald-400">
                 0xh واتساب
             </h1>
-            <p id="appDesc" class="text-sm text-slate-500 dark:text-slate-400 mb-8 text-center">
-                تواصل فوراً بدون حفظ الرقم
-            </p>
+            <p id="appDesc" class="text-sm opacity-80 mb-6 text-center">تواصل فوراً بدون حفظ الرقم</p>
 
-            <!-- Phone Input Section -->
-            <div class="w-full mb-4 relative group">
-                <input type="tel" id="phoneInput" 
-                    class="w-full bg-white/50 dark:bg-slate-800/50 border-2 border-slate-200 dark:border-slate-700 rounded-2xl py-4 px-6 text-lg focus:outline-none focus:border-primary dark:focus:border-primary transition-all duration-300 rtl:text-right ltr:text-left shadow-inner"
-                    placeholder="أدخل الرقم (مثال: 07... أو 962...)" dir="auto">
-                <div class="absolute bottom-0 left-0 h-0.5 w-0 bg-primary transition-all duration-500 group-focus-within:w-full rounded-b-2xl"></div>
+            <!-- Inputs -->
+            <div class="w-full space-y-4">
+                <input type="tel" id="phoneInput" placeholder="أدخل الرقم (مثال: 079... أو 9627...)" dir="ltr" class="w-full px-5 py-4 rounded-xl bg-black/20 dark:bg-black/30 border border-white/10 focus:border-primary focus:ring-2 focus:ring-primary/50 outline-none transition-all text-center text-xl font-semibold tracking-wider placeholder:text-sm placeholder:tracking-normal placeholder:font-normal dark:text-white text-gray-800">
+                
+                <input type="text" id="hintInput" placeholder="اسم الشخص أو تلميح (اختياري)" class="w-full px-4 py-3 rounded-xl bg-black/10 dark:bg-black/20 border border-white/10 focus:border-primary/50 focus:ring-1 focus:ring-primary/30 outline-none transition-all text-center text-sm dark:text-white text-gray-800">
             </div>
 
-            <!-- Optional Note/Name Section -->
-            <div class="w-full mb-6 relative group">
-                <input type="text" id="noteInput" 
-                    class="w-full bg-white/40 dark:bg-slate-800/40 border-2 border-slate-100 dark:border-slate-700/50 rounded-2xl py-3 px-6 text-sm focus:outline-none focus:border-primary/50 dark:focus:border-primary/50 transition-all duration-300 rtl:text-right ltr:text-left shadow-sm"
-                    placeholder="الاسم أو تلميح (اختياري)" dir="auto">
-            </div>
-
-            <!-- Action Button -->
-            <button id="sendBtn" class="w-full bg-gradient-to-r from-primaryDark to-green-500 hover:from-green-600 hover:to-green-400 text-white font-bold py-4 px-6 rounded-2xl shadow-lg transform hover:-translate-y-1 hover:shadow-xl transition-all duration-300 flex items-center justify-center gap-2 relative overflow-hidden">
-                <span id="btnText" class="relative z-10">تحويل ومراسلة</span>
-                <svg id="btnIcon" class="w-5 h-5 relative z-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path></svg>
-                <!-- Shine effect -->
-                <div id="btnEffect" class="absolute top-0 left-0 w-full h-full bg-white opacity-20 transform -translate-x-full transition-transform duration-500"></div>
+            <button id="convertBtn" class="mt-6 w-full py-4 rounded-xl bg-gradient-to-r from-primary to-emerald-500 hover:from-emerald-500 hover:to-primary text-white font-bold text-lg shadow-lg hover:shadow-primary/50 transform hover:-translate-y-1 transition-all flex justify-center items-center gap-2">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path></svg>
+                <span id="btnText">تحويل ومراسلة</span>
             </button>
         </div>
 
-        <!-- History Section -->
-        <div id="historyContainer" class="mt-8 glass-panel rounded-2xl p-5 w-full hide fade-in relative z-10">
-            <h3 id="historyTitle" class="text-sm font-bold text-slate-600 dark:text-slate-300 mb-4 border-b border-slate-200 dark:border-slate-700 pb-2">
-                الأرقام السابقة
-            </h3>
-            <ul id="historyList" class="max-h-52 overflow-y-auto custom-scrollbar flex flex-col gap-2 pr-1 rtl:pr-0 rtl:pl-1">
-                <!-- Items injected here -->
-            </ul>
-            <button id="clearHistoryBtn" class="mt-4 text-xs text-red-500 hover:text-red-600 transition w-full text-center py-2 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20">
-                مسح السجل
+        <!-- History Card -->
+        <div class="glass-panel rounded-3xl p-6 w-full mt-6 flex flex-col max-h-[400px]">
+            <div class="flex justify-between items-center mb-4 border-b border-white/10 pb-2">
+                <h2 id="historyTitle" class="text-lg font-bold">الأرقام السابقة</h2>
+                <div class="flex gap-2">
+                    <button id="multiSelectBtn" class="text-xs px-3 py-1 bg-blue-500/20 text-blue-400 hover:bg-blue-500/40 rounded-lg transition-colors hidden">تحديد</button>
+                    <button id="cancelSelectBtn" class="text-xs px-3 py-1 bg-gray-500/20 text-gray-400 hover:bg-gray-500/40 rounded-lg transition-colors hidden">إلغاء</button>
+                    <button id="deleteSelectedBtn" class="text-xs px-3 py-1 bg-red-500/20 text-red-400 hover:bg-red-500/40 rounded-lg transition-colors hidden">حذف المحدد</button>
+                </div>
+            </div>
+            
+            <div id="historyList" class="flex-1 overflow-y-auto custom-scrollbar space-y-2 pr-2">
+                <!-- يتم حقن السجل هنا -->
+            </div>
+            
+            <button id="clearHistoryBtn" class="mt-4 text-sm text-red-400 hover:text-red-300 w-full text-center py-2 transition-colors">
+                مسح السجل بالكامل
             </button>
         </div>
+
+        <!-- زر المساعدة الجديد (أصبح بارزاً وواضحاً جداً) -->
+        <button id="openHelpBtn" class="mt-6 w-full py-3 rounded-2xl glass-panel border border-primary/30 text-primary hover:bg-primary/20 transition-all flex items-center justify-center gap-2 shadow-lg font-bold transform hover:-translate-y-1">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            <span id="helpBtnText">كيف أستخدم الموقع؟</span>
+        </button>
     </main>
 
-    <!-- Watermark Footer (Fixed always at the bottom) -->
-    <footer class="fixed bottom-4 left-0 w-full z-50 flex justify-center pointer-events-none">
-        <a href="https://link.me/mkm" target="_blank" rel="noopener noreferrer" class="inline-block px-5 py-2.5 glass-panel rounded-full text-xs md:text-sm font-bold transition-all hover:scale-105 transform duration-300 shadow-md pointer-events-auto border-t border-white/20">
-            <span id="watermarkText" class="animate-shimmer-text">تم تطوير هذا الموقع بواسطه mkm</span>
-        </a>
-    </footer>
+    <!-- صفحة المساعدة (مخفية افتراضياً) -->
+    <div id="helpView" class="hidden w-full max-w-md p-6 mt-20 mb-28 relative z-10 flex flex-col items-center">
+        <div class="glass-panel rounded-3xl p-8 w-full">
+            <button id="closeHelpBtn" class="mb-4 text-primary hover:text-emerald-400 flex items-center gap-2 transition-colors">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+                <span id="helpBack">عودة للرئيسية</span>
+            </button>
+            <h2 id="helpTitle" class="text-2xl font-bold mb-4 text-primary">دليل الاستخدام</h2>
+            <div id="helpContent" class="space-y-4 text-sm leading-relaxed dark:text-gray-300 text-gray-700">
+                <!-- المحتوى يملأ من الجافاسكربت -->
+            </div>
+        </div>
+    </div>
+
+    <!-- نافذة تأكيد الحذف (Modal) -->
+    <div id="confirmModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] hidden flex items-center justify-center p-4 opacity-0 transition-opacity duration-300">
+        <div class="glass-panel p-6 rounded-2xl w-full max-w-sm transform scale-95 transition-transform duration-300" id="confirmModalContent">
+            <h3 id="confirmTitle" class="text-xl font-bold mb-2 text-center text-red-400">تأكيد الحذف</h3>
+            <p id="confirmMsg" class="text-center mb-6 opacity-80 text-sm">هل أنت متأكد من حذف هذا العنصر؟</p>
+            <div class="flex gap-4">
+                <button id="confirmYes" class="flex-1 py-2 bg-red-500/80 hover:bg-red-500 text-white rounded-xl transition-colors font-bold">نعم، احذف</button>
+                <button id="confirmNo" class="flex-1 py-2 bg-gray-500/50 hover:bg-gray-500 text-white rounded-xl transition-colors">إلغاء</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- نافذة تعديل السجل (Edit Modal) -->
+    <div id="editModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] hidden flex items-center justify-center p-4 opacity-0 transition-opacity duration-300">
+        <div class="glass-panel p-6 rounded-2xl w-full max-w-sm transform scale-95 transition-transform duration-300" id="editModalContent">
+            <h3 id="editTitle" class="text-xl font-bold mb-4 text-center text-primary">تعديل البيانات</h3>
+            <div class="space-y-4 mb-6">
+                <div>
+                    <label id="editPhoneLabel" class="block text-xs opacity-70 mb-1">رقم الهاتف</label>
+                    <input type="tel" id="editPhoneInput" dir="ltr" class="w-full px-4 py-2 rounded-xl bg-black/30 border border-white/20 focus:border-primary outline-none transition-all text-center">
+                </div>
+                <div>
+                    <label id="editHintLabel" class="block text-xs opacity-70 mb-1">الاسم / التلميح</label>
+                    <input type="text" id="editHintInput" class="w-full px-4 py-2 rounded-xl bg-black/30 border border-white/20 focus:border-primary outline-none transition-all text-center">
+                </div>
+            </div>
+            <div class="flex gap-4">
+                <button id="saveEditBtn" class="flex-1 py-2 bg-primary/80 hover:bg-primary text-white rounded-xl transition-colors font-bold">حفظ</button>
+                <button id="cancelEditBtn" class="flex-1 py-2 bg-gray-500/50 hover:bg-gray-500 text-white rounded-xl transition-colors">إلغاء</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- العلامة المائية الثابتة في الأسفل -->
+    <a href="https://link.me/mkm" target="_blank" class="watermark">
+        <span class="shimmer-text" id="watermarkText">تم تطوير هذا الموقع بواسطه mkm</span>
+        <svg class="w-4 h-4 text-primary" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M12.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+    </a>
 
     <script>
-        // --- Application State ---
+        // --- State ---
         let currentLang = 'ar';
-        let isDark = true; // Default to dark mode
+        let isDark = true;
         let history = [];
+        let isSelectionMode = false;
+        let selectedIds = new Set();
+        let confirmActionCallback = null;
+        let currentEditId = null;
+        let isInitialLoad = true;
 
         // --- Translations ---
         const translations = {
             ar: {
-                title: "0xh واتساب",
-                desc: "تواصل فوراً بدون حفظ الرقم",
-                placeholder: "أدخل الرقم (مثال: 07... أو 962...)",
-                notePlaceholder: "الاسم أو تلميح (اختياري)",
-                btn: "تحويل ومراسلة",
-                btnReady: "جاهز! جاري النقل...",
-                historyTitle: "الأرقام السابقة",
-                clearHistory: "مسح السجل"
+                appTitle: "0xh واتساب", appDesc: "تواصل فوراً بدون حفظ الرقم",
+                phonePlaceholder: "أدخل الرقم (مثال: 079... أو 9627...)", hintPlaceholder: "اسم الشخص أو تلميح (اختياري)",
+                convertBtn: "تحويل ومراسلة", readyBtn: "جاهز! جاري النقل...",
+                historyTitle: "الأرقام السابقة", clearHistory: "مسح السجل بالكامل",
+                emptyHistory: "لا توجد أرقام سابقة", watermark: "تم تطوير هذا الموقع بواسطه mkm",
+                multiSelect: "تحديد", cancelSelect: "إلغاء", deleteSelected: "حذف المحدد",
+                confirmDelTitle: "تأكيد الحذف", confirmDelMsg: "هل أنت متأكد من حذف هذا العنصر؟",
+                confirmMultiMsg: "هل أنت متأكد من حذف العناصر المحددة؟", confirmClearMsg: "هل أنت متأكد من مسح السجل بالكامل؟",
+                yes: "نعم، احذف", no: "إلغاء",
+                editTitle: "تعديل البيانات", editPhone: "رقم الهاتف", editHint: "الاسم / التلميح", save: "حفظ",
+                helpBtn: "كيف أستخدم الموقع؟", helpBack: "عودة للرئيسية", helpPageTitle: "دليل الاستخدام",
+                helpContent: `
+                    <strong>1. التحويل المباشر:</strong><br>اكتب الرقم (حتى لو بدأ بـ 07) وسيقوم الموقع تلقائياً بتحويله للصيغة الدولية وفتح محادثة واتساب فوراً.<br><br>
+                    <strong>2. إضافة الأسماء:</strong><br>يمكنك كتابة اسم الشخص في الخانة الاختيارية لكي تتذكره عندما يتم حفظه في السجل بالأسفل.<br><br>
+                    <strong>3. إدارة السجل (تعديل وحذف):</strong><br>
+                    - اضغط على أيقونة 🗑️ لحذف رقم واحد.<br>
+                    - اضغط على زر "تحديد" لتحديد عدة أرقام وحذفها دفعة واحدة.<br>
+                    - اضغط على أيقونة ✏️ لتعديل الرقم أو الاسم في نافذة منبثقة.<br><br>
+                    <strong>4. الخصوصية:</strong><br>جميع الأرقام يتم حفظها في متصفحك أنت فقط (Local Storage) ولا يتم إرسالها لأي خادم.
+                `
             },
             en: {
-                title: "0xh WhatsApp",
-                desc: "Chat instantly without saving",
-                placeholder: "Enter number (e.g. 07... or 962...)",
-                notePlaceholder: "Name or Note (Optional)",
-                btn: "Open WhatsApp",
-                btnReady: "Ready! Redirecting...",
-                historyTitle: "Previous Numbers",
-                clearHistory: "Clear History"
+                appTitle: "0xh WhatsApp", appDesc: "Chat instantly without saving",
+                phonePlaceholder: "Enter number (e.g., 079... or 9627...)", hintPlaceholder: "Name or hint (optional)",
+                convertBtn: "Convert & Chat", readyBtn: "Ready! Redirecting...",
+                historyTitle: "History", clearHistory: "Clear All History",
+                emptyHistory: "No history yet", watermark: "Developed by mkm",
+                multiSelect: "Select", cancelSelect: "Cancel", deleteSelected: "Delete Selected",
+                confirmDelTitle: "Confirm Deletion", confirmDelMsg: "Are you sure you want to delete this item?",
+                confirmMultiMsg: "Are you sure you want to delete selected items?", confirmClearMsg: "Are you sure you want to clear all history?",
+                yes: "Yes, Delete", no: "Cancel",
+                editTitle: "Edit Data", editPhone: "Phone Number", editHint: "Name / Hint", save: "Save",
+                helpBtn: "How to use?", helpBack: "Back to Home", helpPageTitle: "User Guide",
+                helpContent: `
+                    <strong>1. Direct Convert:</strong><br>Type the number (even if local starting with 07) and the site auto-formats it to international and opens WhatsApp.<br><br>
+                    <strong>2. Adding Names:</strong><br>Use the optional hint field to add a name so you remember it in the history below.<br><br>
+                    <strong>3. History Management:</strong><br>
+                    - Click 🗑️ to delete a single number.<br>
+                    - Click "Select" to pick multiple items and delete them at once.<br>
+                    - Click ✏️ to open a modal and edit the number or name.<br><br>
+                    <strong>4. Privacy:</strong><br>All history is saved locally in your browser (Local Storage). No data is sent to any server.
+                `
             }
         };
 
         // --- DOM Elements ---
         const phoneInput = document.getElementById('phoneInput');
-        const noteInput = document.getElementById('noteInput');
-        const sendBtn = document.getElementById('sendBtn');
+        const hintInput = document.getElementById('hintInput');
+        const convertBtn = document.getElementById('convertBtn');
         const btnText = document.getElementById('btnText');
-        const btnIcon = document.getElementById('btnIcon');
-        const btnEffect = document.getElementById('btnEffect');
+        const historyList = document.getElementById('historyList');
         const themeToggle = document.getElementById('themeToggle');
         const langToggle = document.getElementById('langToggle');
-        const historyContainer = document.getElementById('historyContainer');
-        const historyList = document.getElementById('historyList');
-        const clearHistoryBtn = document.getElementById('clearHistoryBtn');
-        const canvas = document.getElementById('bg-canvas');
-        const ctx = canvas.getContext('2d');
+        const sunIcon = document.getElementById('sunIcon');
+        const moonIcon = document.getElementById('moonIcon');
+        
+        // Modals
+        const confirmModal = document.getElementById('confirmModal');
+        const confirmModalContent = document.getElementById('confirmModalContent');
+        const editModal = document.getElementById('editModal');
+        const editModalContent = document.getElementById('editModalContent');
+        
+        // Views
+        const mainView = document.getElementById('mainView');
+        const helpView = document.getElementById('helpView');
 
-        // --- Initialization ---
-        function init() {
-            // Detect System Language
-            const sysLang = navigator.language.slice(0, 2);
-            currentLang = (sysLang === 'ar') ? 'ar' : 'en';
-            
-            // Detect System Theme
-            if (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) {
-                isDark = false;
-            }
-
-            applyLanguage();
-            applyTheme();
-            loadHistory();
-            initCanvasEffect();
-        }
-
-        // --- Theme Logic ---
+        // --- Core Functions ---
         function applyTheme() {
-            if (isDark) {
+            const sun = document.getElementById('sun');
+            const moon = document.getElementById('moon');
+
+            if (isDark) { 
                 document.documentElement.classList.add('dark');
-            } else {
+                sunIcon.classList.remove('hidden'); moonIcon.classList.add('hidden');
+                
+                if (isInitialLoad) {
+                    sun.style.cssText = 'transform: translate(-50%, 100vh); opacity: 0; animation: none;';
+                    moon.style.cssText = 'transform: translate(-50%, 15vh); opacity: 1; animation: none;';
+                } else {
+                    sun.style.animation = 'slideDownOut 1s forwards cubic-bezier(0.4, 0, 0.2, 1)';
+                    moon.style.animation = 'slideDownIn 1s forwards cubic-bezier(0.4, 0, 0.2, 1)';
+                }
+            } else { 
                 document.documentElement.classList.remove('dark');
+                moonIcon.classList.remove('hidden'); sunIcon.classList.add('hidden');
+                
+                if (isInitialLoad) {
+                    sun.style.cssText = 'transform: translate(-50%, 15vh); opacity: 1; animation: none;';
+                    moon.style.cssText = 'transform: translate(-50%, 100vh); opacity: 0; animation: none;';
+                } else {
+                    moon.style.animation = 'slideDownOut 1s forwards cubic-bezier(0.4, 0, 0.2, 1)';
+                    sun.style.animation = 'slideDownIn 1s forwards cubic-bezier(0.4, 0, 0.2, 1)';
+                }
             }
             updateCanvasColors();
         }
 
-        themeToggle.addEventListener('click', () => {
-            isDark = !isDark;
-            applyTheme();
-        });
-
-        // --- Language Logic ---
         function applyLanguage() {
             const t = translations[currentLang];
-            
             document.documentElement.lang = currentLang;
             document.documentElement.dir = currentLang === 'ar' ? 'rtl' : 'ltr';
+            langToggle.textContent = currentLang === 'ar' ? 'EN' : 'عربي';
             
-            document.getElementById('appTitle').innerText = t.title;
-            document.getElementById('appDesc').innerText = t.desc;
-            phoneInput.placeholder = t.placeholder;
-            noteInput.placeholder = t.notePlaceholder;
-            btnText.innerText = t.btn;
-            document.getElementById('historyTitle').innerText = t.historyTitle;
-            clearHistoryBtn.innerText = t.clearHistory;
+            document.getElementById('appTitle').textContent = t.appTitle;
+            document.getElementById('appDesc').textContent = t.appDesc;
+            phoneInput.placeholder = t.phonePlaceholder;
+            hintInput.placeholder = t.hintPlaceholder;
+            btnText.textContent = t.convertBtn;
+            document.getElementById('historyTitle').textContent = t.historyTitle;
+            document.getElementById('clearHistoryBtn').textContent = t.clearHistory;
+            document.getElementById('watermarkText').textContent = t.watermark;
             
-            langToggle.innerText = currentLang === 'ar' ? 'EN' : 'عربي';
+            document.getElementById('multiSelectBtn').textContent = t.multiSelect;
+            document.getElementById('cancelSelectBtn').textContent = t.cancelSelect;
+            document.getElementById('deleteSelectedBtn').textContent = t.deleteSelected;
+            
+            document.getElementById('confirmTitle').textContent = t.confirmDelTitle;
+            document.getElementById('confirmYes').textContent = t.yes;
+            document.getElementById('confirmNo').textContent = t.no;
+            
+            document.getElementById('editTitle').textContent = t.editTitle;
+            document.getElementById('editPhoneLabel').textContent = t.editPhone;
+            document.getElementById('editHintLabel').textContent = t.editHint;
+            document.getElementById('saveEditBtn').textContent = t.save;
+            document.getElementById('cancelEditBtn').textContent = t.no;
+
+            document.getElementById('helpBtnText').textContent = t.helpBtn;
+            document.getElementById('helpBack').textContent = t.helpBack;
+            document.getElementById('helpTitle').textContent = t.helpPageTitle;
+            document.getElementById('helpContent').innerHTML = t.helpContent;
             
             renderHistory();
         }
 
-        langToggle.addEventListener('click', () => {
-            currentLang = currentLang === 'ar' ? 'en' : 'ar';
+        function loadPreferences() {
+            const sysDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            isDark = sysDark;
+            const sysLang = navigator.language.startsWith('ar') ? 'ar' : 'en';
+            currentLang = sysLang;
+            
+            const savedHistory = localStorage.getItem('0xh_history');
+            if(savedHistory) history = JSON.parse(savedHistory);
+            
+            applyTheme();
             applyLanguage();
-        });
-
-        // --- Core Application Logic (Smart Number Parsing) ---
-        function generateLink() {
-            let rawNumber = phoneInput.value.trim();
-            let noteValue = noteInput.value.trim();
+            handleRouting();
             
-            // Keep only digits and plus sign
-            let cleanNumber = rawNumber.replace(/[^\d+]/g, '');
-
-            if (!cleanNumber) return;
-
-            // --- SMART NUMBER CONVERSION ---
-            // If starts with 07 (Local Jordan), convert to 9627
-            if (cleanNumber.startsWith('07')) {
-                cleanNumber = '962' + cleanNumber.substring(1);
-            } 
-            // If starts with 00, replace with nothing so it starts directly with country code
-            else if (cleanNumber.startsWith('00')) {
-                cleanNumber = cleanNumber.substring(2);
-            }
-            // If starts with +, remove it (WhatsApp prefers pure numbers)
-            else if (cleanNumber.startsWith('+')) {
-                cleanNumber = cleanNumber.substring(1);
-            }
-
-            // UI Feedback
-            const originalText = btnText.innerText;
-            btnText.innerText = translations[currentLang].btnReady;
-            btnIcon.classList.add('hidden');
-            btnEffect.classList.remove('-translate-x-full');
-            btnEffect.classList.add('translate-x-0');
-            
-            // Save to history
-            saveToHistory(rawNumber, cleanNumber, noteValue);
-
-            // Navigate to WhatsApp after short delay
-            setTimeout(() => {
-                btnText.innerText = originalText;
-                btnIcon.classList.remove('hidden');
-                btnEffect.classList.remove('translate-x-0');
-                btnEffect.classList.add('-translate-x-full');
-                phoneInput.value = '';
-                noteInput.value = '';
-                
-                // Redirect to WhatsApp
-                window.location.href = `https://wa.me/${cleanNumber}`;
-            }, 800);
+            // Allow animations after initial load
+            setTimeout(() => { isInitialLoad = false; }, 100);
         }
 
-        sendBtn.addEventListener('click', generateLink);
-        phoneInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') generateLink();
-        });
-        noteInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') generateLink();
-        });
+        // --- WhatsApp Logic ---
+        function formatNumberForWhatsApp(num) {
+            let cleaned = num.replace(/\D/g, '');
+            // الخوارزمية الذكية للأردن
+            if (cleaned.startsWith('00')) cleaned = cleaned.substring(2);
+            else if (cleaned.startsWith('07')) cleaned = '962' + cleaned.substring(1);
+            else if (cleaned.startsWith('0')) cleaned = cleaned.substring(1); 
+            return cleaned;
+        }
 
-        // --- History / LocalStorage Management ---
-        function saveToHistory(displayNum, cleanNum, note) {
-            // Remove if exists to avoid duplicates
-            history = history.filter(item => item.clean !== cleanNum);
+        convertBtn.addEventListener('click', () => {
+            const rawNum = phoneInput.value.trim();
+            if(!rawNum) return;
             
-            history.unshift({ display: displayNum, clean: cleanNum, note: note, time: new Date().getTime() });
+            const finalNum = formatNumberForWhatsApp(rawNum);
+            const hint = hintInput.value.trim();
             
-            if (history.length > 10) history.pop(); // Keep max 10
-            
+            // إضافة للسجل
+            const newItem = { id: Date.now().toString(), num: finalNum, display: rawNum, hint: hint };
+            history.unshift(newItem);
             localStorage.setItem('0xh_history', JSON.stringify(history));
             renderHistory();
-        }
 
-        function loadHistory() {
-            try {
-                const saved = localStorage.getItem('0xh_history');
-                if (saved) {
-                    history = JSON.parse(saved);
-                    renderHistory();
-                }
-            } catch (e) {
-                console.error("Could not load history", e);
+            // تأثير الزر
+            const originalText = btnText.textContent;
+            btnText.textContent = translations[currentLang].readyBtn;
+            convertBtn.classList.add('scale-105', 'bg-emerald-400');
+            
+            setTimeout(() => {
+                btnText.textContent = originalText;
+                convertBtn.classList.remove('scale-105', 'bg-emerald-400');
+                phoneInput.value = ''; hintInput.value = '';
+                window.location.href = `https://wa.me/${finalNum}`;
+            }, 1500);
+        });
+
+        // --- History Logic ---
+        function toggleSelectionUI(activate) {
+            isSelectionMode = activate;
+            selectedIds.clear();
+            const multiBtn = document.getElementById('multiSelectBtn');
+            const cancelBtn = document.getElementById('cancelSelectBtn');
+            const delSelBtn = document.getElementById('deleteSelectedBtn');
+            const clearBtn = document.getElementById('clearHistoryBtn');
+
+            if(isSelectionMode) {
+                multiBtn.classList.add('hidden');
+                cancelBtn.classList.remove('hidden');
+                delSelBtn.classList.remove('hidden');
+                clearBtn.classList.add('hidden');
+            } else {
+                if(history.length > 0) multiBtn.classList.remove('hidden');
+                else multiBtn.classList.add('hidden');
+                cancelBtn.classList.add('hidden');
+                delSelBtn.classList.add('hidden');
+                if(history.length > 0) clearBtn.classList.remove('hidden');
             }
+            // استدعاء إعادة الرسم هنا فقط لأنها استجابة لزر التحديد/الإلغاء
+            renderHistory();
         }
 
         function renderHistory() {
             historyList.innerHTML = '';
             
             if (history.length === 0) {
-                historyContainer.classList.add('hide');
+                historyList.innerHTML = `<p class="text-center text-sm opacity-50 py-4">${translations[currentLang].emptyHistory}</p>`;
+                document.getElementById('clearHistoryBtn').classList.add('hidden');
+                document.getElementById('multiSelectBtn').classList.add('hidden');
                 return;
             }
             
-            historyContainer.classList.remove('hide');
-            
+            if(!isSelectionMode) {
+                document.getElementById('clearHistoryBtn').classList.remove('hidden');
+                document.getElementById('multiSelectBtn').classList.remove('hidden');
+            }
+
             history.forEach(item => {
-                const li = document.createElement('li');
-                li.className = "flex justify-between items-center p-3 bg-white/40 dark:bg-slate-800/40 rounded-xl hover:bg-white/80 dark:hover:bg-slate-700/80 transition-colors cursor-pointer group shadow-sm";
+                const div = document.createElement('div');
+                div.className = `flex justify-between items-center p-3 rounded-xl bg-black/10 dark:bg-black/20 border border-white/5 transition-colors ${selectedIds.has(item.id) ? 'bg-primary/20 border-primary/50' : ''}`;
                 
-                // Container for Text
-                const infoDiv = document.createElement('div');
-                infoDiv.className = "flex flex-col w-full overflow-hidden text-left rtl:text-right";
-                
-                // Note display
-                if (item.note) {
-                    const noteSpan = document.createElement('span');
-                    noteSpan.className = "text-xs font-bold text-primaryDark dark:text-primary mb-1 truncate";
-                    noteSpan.innerText = item.note;
-                    infoDiv.appendChild(noteSpan);
+                let selectUI = '';
+                if(isSelectionMode) {
+                    selectUI = `
+                        <div class="mr-3 ml-3 cursor-pointer select-checkbox" data-id="${item.id}">
+                            <div class="w-5 h-5 rounded border ${selectedIds.has(item.id) ? 'bg-primary border-primary flex items-center justify-center' : 'border-gray-400'}">
+                                ${selectedIds.has(item.id) ? '<svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>' : ''}
+                            </div>
+                        </div>`;
                 }
 
-                // Number display
-                const numSpan = document.createElement('span');
-                numSpan.className = "font-semibold tracking-wider text-slate-700 dark:text-slate-200 dir-ltr text-left";
-                numSpan.innerText = item.display || item.clean;
-                infoDiv.appendChild(numSpan);
-                
-                // Action icon
-                const icon = document.createElement('div');
-                icon.className = "text-primary opacity-0 group-hover:opacity-100 transition-opacity transform group-hover:scale-110 flex-shrink-0 ml-3 rtl:mr-3 rtl:ml-0";
-                icon.innerHTML = `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>`;
-                
-                li.appendChild(infoDiv);
-                li.appendChild(icon);
-                
-                // Click to redirect
-                li.addEventListener('click', () => {
-                    window.location.href = `https://wa.me/${item.clean}`;
-                });
-                
-                historyList.appendChild(li);
+                div.innerHTML = `
+                    <div class="flex items-center flex-1 overflow-hidden">
+                        ${selectUI}
+                        <div class="flex-1 cursor-pointer flex flex-col items-start truncate" onclick="${isSelectionMode ? `toggleCheckbox('${item.id}')` : `window.location.href='https://wa.me/${item.num}'`}">
+                            <span class="font-bold font-mono tracking-wider">${item.num}</span>
+                            ${item.hint ? `<span class="text-xs text-primary truncate max-w-full">${item.hint}</span>` : ''}
+                        </div>
+                    </div>
+                    <div class="flex gap-2 opacity-70 ${isSelectionMode ? 'hidden' : ''}">
+                        <button onclick="openEditModal('${item.id}')" class="p-2 hover:text-blue-400 transition-colors"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg></button>
+                        <button onclick="confirmDelete('${item.id}')" class="p-2 hover:text-red-400 transition-colors"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg></button>
+                    </div>
+                `;
+                historyList.appendChild(div);
             });
+
+            if(isSelectionMode) {
+                document.querySelectorAll('.select-checkbox').forEach(el => {
+                    el.addEventListener('click', (e) => { e.stopPropagation(); toggleCheckbox(el.dataset.id); });
+                });
+            }
         }
 
-        clearHistoryBtn.addEventListener('click', () => {
-            history = [];
-            localStorage.removeItem('0xh_history');
+        window.toggleCheckbox = function(id) {
+            if(selectedIds.has(id)) selectedIds.delete(id);
+            else selectedIds.add(id);
             renderHistory();
+        }
+
+        // --- Modals Logic ---
+        function showModal(modal, content) {
+            modal.classList.remove('hidden');
+            setTimeout(() => { modal.classList.remove('opacity-0'); content.classList.remove('scale-95'); }, 10);
+        }
+        function hideModal(modal, content) {
+            modal.classList.add('opacity-0'); content.classList.add('scale-95');
+            setTimeout(() => { modal.classList.add('hidden'); }, 300);
+        }
+
+        // Delete Confirm Modal
+        window.confirmDelete = function(id) {
+            document.getElementById('confirmMsg').textContent = translations[currentLang].confirmDelMsg;
+            confirmActionCallback = () => {
+                history = history.filter(item => item.id !== id);
+                updateHistoryState();
+            };
+            showModal(confirmModal, confirmModalContent);
+        }
+
+        document.getElementById('clearHistoryBtn').addEventListener('click', () => {
+            document.getElementById('confirmMsg').textContent = translations[currentLang].confirmClearMsg;
+            confirmActionCallback = () => { history = []; updateHistoryState(); };
+            showModal(confirmModal, confirmModalContent);
         });
 
-        // --- Beautiful Canvas Background Effect ---
-        let animationFrameId;
+        document.getElementById('deleteSelectedBtn').addEventListener('click', () => {
+            if(selectedIds.size === 0) return;
+            document.getElementById('confirmMsg').textContent = translations[currentLang].confirmMultiMsg;
+            confirmActionCallback = () => {
+                history = history.filter(item => !selectedIds.has(item.id));
+                toggleSelectionUI(false);
+                updateHistoryState();
+            };
+            showModal(confirmModal, confirmModalContent);
+        });
+
+        document.getElementById('confirmYes').addEventListener('click', () => {
+            if(confirmActionCallback) confirmActionCallback();
+            hideModal(confirmModal, confirmModalContent);
+        });
+        document.getElementById('confirmNo').addEventListener('click', () => hideModal(confirmModal, confirmModalContent));
+
+        // Edit Modal
+        window.openEditModal = function(id) {
+            const item = history.find(i => i.id === id);
+            if(!item) return;
+            currentEditId = id;
+            document.getElementById('editPhoneInput').value = item.num;
+            document.getElementById('editHintInput').value = item.hint || '';
+            showModal(editModal, editModalContent);
+        }
+
+        document.getElementById('saveEditBtn').addEventListener('click', () => {
+            if(currentEditId) {
+                const item = history.find(i => i.id === currentEditId);
+                if(item) {
+                    item.num = document.getElementById('editPhoneInput').value.trim();
+                    item.hint = document.getElementById('editHintInput').value.trim();
+                    updateHistoryState();
+                }
+            }
+            hideModal(editModal, editModalContent);
+        });
+        document.getElementById('cancelEditBtn').addEventListener('click', () => hideModal(editModal, editModalContent));
+
+        function updateHistoryState() {
+            localStorage.setItem('0xh_history', JSON.stringify(history));
+            renderHistory();
+        }
+
+        // Event Listeners for UI
+        document.getElementById('multiSelectBtn').addEventListener('click', () => toggleSelectionUI(true));
+        document.getElementById('cancelSelectBtn').addEventListener('click', () => toggleSelectionUI(false));
+        
+        themeToggle.addEventListener('click', () => { isDark = !isDark; applyTheme(); });
+        langToggle.addEventListener('click', () => { currentLang = currentLang === 'ar' ? 'en' : 'ar'; applyLanguage(); });
+
+        // --- Routing (Help Page) ---
+        function handleRouting() {
+            if (window.location.hash === '#help') {
+                mainView.classList.add('hidden');
+                helpView.classList.remove('hidden');
+            } else {
+                helpView.classList.add('hidden');
+                mainView.classList.remove('hidden');
+            }
+        }
+        window.addEventListener('hashchange', handleRouting);
+        document.getElementById('openHelpBtn').addEventListener('click', () => { window.location.hash = 'help'; });
+        document.getElementById('closeHelpBtn').addEventListener('click', () => { window.location.hash = ''; });
+
+        // --- Canvas Animation ---
+        const canvas = document.getElementById('bgCanvas');
+        const ctx = canvas.getContext('2d');
         let particles = [];
-        let colors = [];
+
+        function initCanvas() {
+            canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+            particles = [];
+            const count = window.innerWidth < 768 ? 20 : 50;
+            for(let i=0; i<count; i++) {
+                particles.push({
+                    x: Math.random() * canvas.width, y: Math.random() * canvas.height,
+                    radius: Math.random() * 2 + 1,
+                    vx: (Math.random() - 0.5) * 0.5, vy: (Math.random() - 0.5) * 0.5,
+                    baseX: Math.random() * canvas.width, angle: Math.random() * Math.PI * 2
+                });
+            }
+        }
 
         function updateCanvasColors() {
-            if (isDark) {
-                // Dark mode colors (Blues, Teals, Emeralds)
-                colors = ['#10b981', '#34d399', '#3b82f6', '#0ea5e9'];
-            } else {
-                // Light mode colors (Soft Greens, Yellows)
-                colors = ['#10b981', '#86efac', '#fde047', '#34d399'];
-            }
-            // Update existing particles colors
-            particles.forEach(p => {
-                p.color = colors[Math.floor(Math.random() * colors.length)];
-            });
+            ctx.fillStyle = isDark ? 'rgba(16, 185, 129, 0.3)' : 'rgba(16, 185, 129, 0.15)';
         }
 
-        function initCanvasEffect() {
-            function resize() {
-                canvas.width = window.innerWidth;
-                canvas.height = window.innerHeight;
-            }
-            window.addEventListener('resize', resize);
-            resize();
+        function animateCanvas() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
             updateCanvasColors();
-
-            class Particle {
-                constructor() {
-                    this.x = Math.random() * canvas.width;
-                    this.y = Math.random() * canvas.height;
-                    this.size = Math.random() * (isDark ? 3 : 8) + 1;
-                    this.speedX = (Math.random() - 0.5) * 1.5;
-                    this.speedY = (Math.random() - 0.5) * 1.5;
-                    this.color = colors[Math.floor(Math.random() * colors.length)];
-                    this.angle = Math.random() * 360;
-                    this.spin = (Math.random() - 0.5) * 0.05;
-                }
-                update() {
-                    this.angle += this.spin;
-                    // Wavy movement using Sine/Cosine
-                    this.x += this.speedX + Math.sin(this.angle) * 0.5;
-                    this.y += this.speedY + Math.cos(this.angle) * 0.5;
-                    
-                    // Wrap around screen
-                    if (this.x > canvas.width) this.x = 0;
-                    if (this.x < 0) this.x = canvas.width;
-                    if (this.y > canvas.height) this.y = 0;
-                    if (this.y < 0) this.y = canvas.height;
-                }
-                draw() {
-                    ctx.fillStyle = this.color;
-                    ctx.beginPath();
-                    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-                    ctx.fill();
-                }
-            }
-
-            // Create particles
-            const particleCount = window.innerWidth < 768 ? 30 : 60;
-            for (let i = 0; i < particleCount; i++) {
-                particles.push(new Particle());
-            }
-
-            function animate() {
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-                // Dynamic connections
-                for (let i = 0; i < particles.length; i++) {
-                    particles[i].update();
-                    particles[i].draw();
-                    
-                    for (let j = i; j < particles.length; j++) {
-                        const dx = particles[i].x - particles[j].x;
-                        const dy = particles[i].y - particles[j].y;
-                        const distance = Math.sqrt(dx * dx + dy * dy);
-                        
-                        if (distance < 100) {
-                            ctx.beginPath();
-                            ctx.strokeStyle = particles[i].color;
-                            ctx.globalAlpha = 0.1;
-                            ctx.lineWidth = 0.5;
-                            ctx.moveTo(particles[i].x, particles[i].y);
-                            ctx.lineTo(particles[j].x, particles[j].y);
-                            ctx.stroke();
-                            ctx.globalAlpha = 1.0;
-                        }
-                    }
-                }
-                animationFrameId = requestAnimationFrame(animate);
-            }
-            animate();
+            particles.forEach(p => {
+                p.angle += 0.01;
+                p.x = p.baseX + Math.sin(p.angle) * 20; // حركة متعرجة انسيابية
+                p.y += p.vy - 0.2; // صعود بطيء
+                
+                if (p.y < -10) { p.y = canvas.height + 10; p.baseX = Math.random() * canvas.width; }
+                
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                ctx.fill();
+            });
+            requestAnimationFrame(animateCanvas);
         }
 
-        // Run application
-        window.onload = init;
+        window.addEventListener('resize', initCanvas);
+        
+        // Start app
+        initCanvas();
+        animateCanvas();
+        loadPreferences();
     </script>
 </body>
 </html>

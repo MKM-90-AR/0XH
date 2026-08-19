@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" class="transition-colors duration-500">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>0xh - WhatsApp Direct Link</title>
+    
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#25D366', // WhatsApp Green
+                        primaryDark: '#128C7E',
+                        darkBg: '#0f172a',
+                        lightBg: '#f8fafc',
+                    },
+                    animation: {
+                        'gradient-x': 'gradient-x 15s ease infinite',
+                        'float': 'float 6s ease-in-out infinite',
+                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                    },
+                    keyframes: {
+                        'gradient-x': {
+                            '0%, 100%': {
+                                'background-size': '200% 200%',
+                                'background-position': 'left center'
+                            },
+                            '50%': {
+                                'background-size': '200% 200%',
+                                'background-position': 'right center'
+                            },
+                        },
+                        'float': {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-20px)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800&family=Inter:wght@400;600;800&display=swap');
+
+        body {
+            font-family: 'Cairo', 'Inter', sans-serif;
+            overflow-x: hidden;
+            transition: background-color 0.5s ease, color 0.5s ease;
+        }
+
+        /* Glassmorphism Classes */
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+        }
+
+        .dark .glass-panel {
+            background: rgba(30, 41, 59, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
+        }
+
+        /* Dynamic Backgrounds */
+        #bg-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            transition: opacity 0.5s ease;
+        }
+
+        /* Custom Scrollbar for history */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: rgba(156, 163, 175, 0.5);
+            border-radius: 10px;
+        }
+        .dark .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: rgba(71, 85, 105, 0.8);
+        }
+        
+        .hide { display: none !important; }
+        .fade-in { animation: fadeIn 0.4s ease forwards; }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+
+<body class="bg-lightBg dark:bg-darkBg text-slate-800 dark:text-slate-200 min-h-screen flex flex-col items-center justify-center relative transition-colors duration-500">
+    
+    <!-- Visual Effect Background Canvas -->
+    <canvas id="bg-canvas"></canvas>
+
+    <!-- Top Controls: Settings -->
+    <div class="absolute top-4 right-4 rtl:left-4 rtl:right-auto flex gap-3 z-10 glass-panel p-2 rounded-full shadow-lg">
+        <button id="themeToggle" class="p-2 rounded-full hover:bg-slate-200 dark:hover:bg-slate-700 transition" aria-label="Toggle Theme">
+            <svg id="icon-sun" class="w-5 h-5 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+            <svg id="icon-moon" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
+        </button>
+        <button id="langToggle" class="p-2 rounded-full font-bold text-sm hover:bg-slate-200 dark:hover:bg-slate-700 transition w-10 text-center" aria-label="Toggle Language">
+            EN
+        </button>
+    </div>
+
+    <main class="w-full max-w-md p-6 z-10 relative">
+        <div class="glass-panel rounded-3xl p-8 w-full flex flex-col items-center animate-float" style="animation-duration: 8s;">
+            
+            <!-- Logo Section -->
+            <div class="relative w-24 h-24 mb-4 flex items-center justify-center rounded-full bg-white/30 dark:bg-black/30 shadow-inner">
+                <!-- User requested image -->
+                <img src="0xh.png" id="mainLogo" alt="0xh Logo" class="w-20 h-20 object-contain rounded-full z-10" onerror="this.style.display='none'; document.getElementById('fallbackLogo').style.display='block';">
+                <!-- Fallback if 0xh.png is missing -->
+                <div id="fallbackLogo" class="hidden text-3xl font-black text-primaryDark dark:text-primary z-10">0xh</div>
+                
+                <!-- Glowing effect behind logo -->
+                <div class="absolute inset-0 bg-primary/20 blur-xl rounded-full animate-pulse-slow"></div>
+            </div>
+
+            <!-- Title -->
+            <h1 id="appTitle" class="text-3xl font-extrabold mb-2 text-center bg-clip-text text-transparent bg-gradient-to-r from-primaryDark to-green-500 dark:from-primary dark:to-green-300">
+                0xh واتساب
+            </h1>
+            <p id="appDesc" class="text-sm text-slate-500 dark:text-slate-400 mb-8 text-center">
+                تواصل فوراً بدون حفظ الرقم
+            </p>
+
+            <!-- Input Section -->
+            <div class="w-full mb-6 relative group">
+                <input type="tel" id="phoneInput" 
+                    class="w-full bg-white/50 dark:bg-slate-800/50 border-2 border-slate-200 dark:border-slate-700 rounded-2xl py-4 px-6 text-lg focus:outline-none focus:border-primary dark:focus:border-primary transition-all duration-300 rtl:text-right ltr:text-left shadow-inner"
+                    placeholder="+962 7... أو 07..." dir="auto">
+                <div class="absolute bottom-0 left-0 h-0.5 w-0 bg-primary transition-all duration-500 group-focus-within:w-full rounded-b-2xl"></div>
+            </div>
+
+            <!-- Action Button -->
+            <button id="sendBtn" class="w-full bg-gradient-to-r from-primaryDark to-green-500 hover:from-green-600 hover:to-green-400 text-white font-bold py-4 px-6 rounded-2xl shadow-lg transform hover:-translate-y-1 hover:shadow-xl transition-all duration-300 flex items-center justify-center gap-2 relative overflow-hidden">
+                <span id="btnText" class="relative z-10">تحويل ورسالة</span>
+                <svg id="btnIcon" class="w-5 h-5 relative z-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path></svg>
+                <!-- Loading/Ready overlay effect -->
+                <div id="btnEffect" class="absolute inset-0 bg-white/20 transform -translate-x-full z-0 transition-transform duration-300"></div>
+            </button>
+        </div>
+
+        <!-- History Section (Cookies/LocalStorage) -->
+        <div id="historyContainer" class="mt-8 glass-panel rounded-2xl p-5 w-full hide fade-in">
+            <h3 id="historyTitle" class="text-sm font-bold text-slate-600 dark:text-slate-300 mb-4 border-b border-slate-200 dark:border-slate-700 pb-2">
+                الأرقام السابقة (محفوظة في جهازك)
+            </h3>
+            <ul id="historyList" class="max-h-40 overflow-y-auto custom-scrollbar flex flex-col gap-2">
+                <!-- History items injected here via JS -->
+            </ul>
+            <button id="clearHistoryBtn" class="mt-3 text-xs text-red-500 hover:text-red-600 transition w-full text-center">
+                مسح السجل
+            </button>
+        </div>
+    </main>
+
+    <!-- Watermark Footer -->
+    <footer class="absolute bottom-4 z-10 text-center w-full">
+        <a href="https://link.me/mkm" target="_blank" rel="noopener noreferrer" class="inline-block px-4 py-2 glass-panel rounded-full text-xs font-semibold text-slate-600 dark:text-slate-300 hover:text-primary dark:hover:text-primary transition-colors hover:scale-105 transform duration-300 shadow-sm">
+            <span id="watermarkText">تم تطوير هذا الموقع بواسطه mkm</span>
+        </a>
+    </footer>
+
+    <script>
+        // --- Application State ---
+        let currentLang = 'ar';
+        let currentTheme = 'light';
+        let history = [];
+        
+        // --- Translations ---
+        const translations = {
+            ar: {
+                title: "0xh واتساب",
+                desc: "تواصل فوراً بدون حفظ الرقم",
+                placeholder: "أدخل الرقم (مثال: 9627...)",
+                btn: "تحويل ومراسلة",
+                btnReady: "جاهز! جاري النقل...",
+                history: "الأرقام السابقة",
+                clear: "مسح السجل",
+                watermark: "تم تطوير هذا الموقع بواسطه mkm"
+            },
+            en: {
+                title: "0xh WhatsApp",
+                desc: "Chat instantly without saving",
+                placeholder: "Enter number (e.g. +123...)",
+                btn: "Open WhatsApp",
+                btnReady: "Ready! Redirecting...",
+                history: "Recent Numbers",
+                clear: "Clear History",
+                watermark: "Developed by mkm"
+            }
+        };
+
+        // --- DOM Elements ---
+        const phoneInput = document.getElementById('phoneInput');
+        const sendBtn = document.getElementById('sendBtn');
+        const btnText = document.getElementById('btnText');
+        const btnEffect = document.getElementById('btnEffect');
+        const themeToggle = document.getElementById('themeToggle');
+        const langToggle = document.getElementById('langToggle');
+        const iconSun = document.getElementById('iconSun');
+        const iconMoon = document.getElementById('iconMoon');
+        const historyContainer = document.getElementById('historyContainer');
+        const historyList = document.getElementById('historyList');
+        const clearHistoryBtn = document.getElementById('clearHistoryBtn');
+
+        // --- Initialization & Environment Detection ---
+        function init() {
+            // Detect Language
+            const sysLang = navigator.language || navigator.userLanguage;
+            // If Arabic, set AR. If English or any other, set EN.
+            if (sysLang.toLowerCase().includes('ar')) {
+                currentLang = 'ar';
+            } else {
+                currentLang = 'en';
+            }
+
+            // Detect Theme Preferences
+            const savedTheme = localStorage.getItem('0xh_theme');
+            if (savedTheme) {
+                currentTheme = savedTheme;
+            } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                currentTheme = 'dark';
+            }
+
+            // Load Cookies/History (Using LocalStorage as the secure modern equivalent)
+            const savedHistory = localStorage.getItem('0xh_cookies_history');
+            if (savedHistory) {
+                try {
+                    history = JSON.parse(savedHistory);
+                } catch(e) { history = []; }
+            }
+
+            applyLanguage();
+            applyTheme();
+            renderHistory();
+            initCanvasEffect();
+        }
+
+        // --- Update UI logic ---
+        function applyLanguage() {
+            const t = translations[currentLang];
+            
+            document.documentElement.lang = currentLang;
+            document.documentElement.dir = currentLang === 'ar' ? 'rtl' : 'ltr';
+            
+            document.getElementById('appTitle').innerText = t.title;
+            document.getElementById('appDesc').innerText = t.desc;
+            phoneInput.placeholder = t.placeholder;
+            btnText.innerText = t.btn;
+            document.getElementById('historyTitle').innerText = t.history;
+            clearHistoryBtn.innerText = t.clear;
+            document.getElementById('watermarkText').innerText = t.watermark; // "تم تطوير هذا الموقع بواسطه mkm"
+            
+            langToggle.innerText = currentLang === 'ar' ? 'EN' : 'عربي';
+        }
+
+        function applyTheme() {
+            const html = document.documentElement;
+            const iconSun = document.getElementById('icon-sun');
+            const iconMoon = document.getElementById('icon-moon');
+
+            if (currentTheme === 'dark') {
+                html.classList.add('dark');
+                iconMoon.classList.add('hidden');
+                iconSun.classList.remove('hidden');
+            } else {
+                html.classList.remove('dark');
+                iconSun.classList.add('hidden');
+                iconMoon.classList.remove('hidden');
+            }
+            
+            localStorage.setItem('0xh_theme', currentTheme);
+            initCanvasEffect(); // Restart effect to match theme
+        }
+
+        // --- Core Application Logic ---
+        function generateLink() {
+            let rawNumber = phoneInput.value.trim();
+            
+            // Clean the number: remove spaces, pluses, dashes, parentheses
+            let cleanNumber = rawNumber.replace(/[\s\+\-\(\)]/g, '');
+            
+            if (!cleanNumber || isNaN(cleanNumber)) {
+                // simple shake animation for error
+                sendBtn.classList.add('animate-pulse');
+                setTimeout(() => sendBtn.classList.remove('animate-pulse'), 500);
+                return;
+            }
+
+            // Visual 'Ready' Effect
+            const originalText = btnText.innerText;
+            btnText.innerText = translations[currentLang].btnReady;
+            btnEffect.classList.remove('-translate-x-full');
+            btnEffect.classList.add('translate-x-0');
+            
+            // Save to history (Cookies / LocalStorage)
+            saveToHistory(rawNumber, cleanNumber);
+
+            // Navigate to WhatsApp after short delay for visual confirmation
+            setTimeout(() => {
+                btnText.innerText = originalText;
+                btnEffect.classList.remove('translate-x-0');
+                btnEffect.classList.add('-translate-x-full');
+                phoneInput.value = '';
+                
+                // Open WhatsApp link
+                const waLink = `https://wa.me/${cleanNumber}`;
+                window.open(waLink, '_blank');
+            }, 800);
+        }
+
+        // --- History / Cookie Management ---
+        function saveToHistory(displayNum, cleanNum) {
+            // Remove if exists to push to top
+            history = history.filter(item => item.clean !== cleanNum);
+            
+            history.unshift({ display: displayNum, clean: cleanNum, time: new Date().getTime() });
+            
+            // Keep only last 10
+            if (history.length > 10) history.pop();
+            
+            localStorage.setItem('0xh_cookies_history', JSON.stringify(history));
+            renderHistory();
+        }
+
+        function renderHistory() {
+            if (history.length === 0) {
+                historyContainer.classList.add('hide');
+                return;
+            }
+            
+            historyContainer.classList.remove('hide');
+            historyList.innerHTML = '';
+            
+            history.forEach(item => {
+                const li = document.createElement('li');
+                li.className = "flex justify-between items-center p-3 bg-white/40 dark:bg-slate-800/40 rounded-xl hover:bg-white/80 dark:hover:bg-slate-700/80 transition-colors cursor-pointer group";
+                
+                // Number display
+                const span = document.createElement('span');
+                span.className = "font-semibold tracking-wider text-slate-700 dark:text-slate-200 dir-ltr text-left";
+                span.innerText = item.display || item.clean;
+                
+                // Action icon
+                const icon = document.createElement('div');
+                icon.className = "text-primary opacity-0 group-hover:opacity-100 transition-opacity transform group-hover:scale-110";
+                icon.innerHTML = `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>`;
+                
+                li.appendChild(span);
+                li.appendChild(icon);
+                
+                li.addEventListener('click', () => {
+                    const waLink = `https://wa.me/${item.clean}`;
+                    window.open(waLink, '_blank');
+                });
+                
+                historyList.appendChild(li);
+            });
+        }
+
+        function clearHistory() {
+            history = [];
+            localStorage.removeItem('0xh_cookies_history');
+            renderHistory();
+        }
+
+        // --- Event Listeners ---
+        sendBtn.addEventListener('click', generateLink);
+        
+        phoneInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') generateLink();
+        });
+
+        themeToggle.addEventListener('click', () => {
+            currentTheme = currentTheme === 'light' ? 'dark' : 'light';
+            applyTheme();
+        });
+
+        langToggle.addEventListener('click', () => {
+            currentLang = currentLang === 'ar' ? 'en' : 'ar';
+            applyLanguage();
+        });
+        
+        clearHistoryBtn.addEventListener('click', clearHistory);
+
+        // --- Beautiful Canvas Background Effect ---
+        let animationFrameId;
+        function initCanvasEffect() {
+            const canvas = document.getElementById('bg-canvas');
+            const ctx = canvas.getContext('2d');
+            
+            // Set size
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            
+            let particles = [];
+            const particleCount = window.innerWidth < 768 ? 30 : 60;
+            
+            // Settings based on theme
+            const isDark = currentTheme === 'dark';
+            const colors = isDark ? 
+                ['rgba(45, 212, 191, 0.2)', 'rgba(37, 211, 102, 0.15)', 'rgba(56, 189, 248, 0.1)'] : // Dark mode colors (teal, green, blue glowing)
+                ['rgba(37, 211, 102, 0.3)', 'rgba(255, 255, 255, 0.6)', 'rgba(226, 232, 240, 0.8)']; // Light mode colors
+
+            class Particle {
+                constructor() {
+                    this.x = Math.random() * canvas.width;
+                    this.y = Math.random() * canvas.height;
+                    this.size = Math.random() * (isDark ? 3 : 15) + 1;
+                    this.speedX = (Math.random() - 0.5) * 0.5;
+                    this.speedY = (Math.random() - 0.5) * 0.5;
+                    this.color = colors[Math.floor(Math.random() * colors.length)];
+                }
+                update() {
+                    this.x += this.speedX;
+                    this.y += this.speedY;
+                    
+                    // Bounce off edges
+                    if (this.x > canvas.width || this.x < 0) this.speedX *= -1;
+                    if (this.y > canvas.height || this.y < 0) this.speedY *= -1;
+                }
+                draw() {
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                    ctx.fillStyle = this.color;
+                    
+                    if (isDark) {
+                        ctx.shadowBlur = 15;
+                        ctx.shadowColor = this.color;
+                    } else {
+                        ctx.shadowBlur = 0;
+                    }
+                    
+                    ctx.fill();
+                }
+            }
+
+            for (let i = 0; i < particleCount; i++) {
+                particles.push(new Particle());
+            }
+
+            function animate() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                
+                // Draw gradient background via canvas for smooth theme transition
+                const gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+                if (isDark) {
+                    gradient.addColorStop(0, '#0f172a');
+                    gradient.addColorStop(1, '#020617');
+                } else {
+                    gradient.addColorStop(0, '#f8fafc');
+                    gradient.addColorStop(1, '#e2e8f0');
+                }
+                ctx.fillStyle = gradient;
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                particles.forEach(p => {
+                    p.update();
+                    p.draw();
+                });
+                animationFrameId = requestAnimationFrame(animate);
+            }
+
+            if (animationFrameId) cancelAnimationFrame(animationFrameId);
+            animate();
+            
+            // Handle Resize
+            window.addEventListener('resize', () => {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+            });
+        }
+
+        // Run Initialization
+        window.onload = init;
+    </script>
+</body>
+</html>

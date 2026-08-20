@@ -6,6 +6,17 @@
     <title>0xh - WhatsApp Direct</title>
     <!-- Favicon -->
     <link rel="icon" href="0XH.jpg" type="image/jpeg">
+    
+    <!-- PWA Meta Tags (جعل الموقع يعمل كتطبيق مستقل بدون متصفح) -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="0xh">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#0f172a">
+    <link rel="apple-touch-icon" href="0XH.jpg">
+    <!-- Manifest مدمج برمجياً لتفعيل التثبيت كبرنامج -->
+    <link rel="manifest" href="data:application/manifest+json;charset=utf-8,%7B%22name%22%3A%220xh%20WhatsApp%20Direct%22%2C%22short_name%22%3A%220xh%22%2C%22start_url%22%3A%22.%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%230f172a%22%2C%22theme_color%22%3A%22%2325D366%22%2C%22icons%22%3A%5B%7B%22src%22%3A%220XH.jpg%22%2C%22sizes%22%3A%22512x512%22%2C%22type%22%3A%22image%2Fjpeg%22%7D%5D%7D">
+
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -922,6 +933,11 @@
                 btn.classList.remove('scale-95', 'opacity-80');
                 btnText.innerText = translations[currentLang].transferBtn;
                 window.location.href = `https://wa.me/${phone}${textParam}`;
+                
+                // التفريغ التلقائي للخانات بعد التحويل ليصبح جاهزاً للرقم التالي
+                document.getElementById('phoneInput').value = '';
+                document.getElementById('nameHint').value = '';
+                document.getElementById('selectedLocation').value = '';
             }, 500);
         }
 

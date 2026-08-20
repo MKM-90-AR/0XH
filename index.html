@@ -7,14 +7,13 @@
     <!-- Favicon -->
     <link rel="icon" href="0XH.jpg" type="image/jpeg">
     
-    <!-- PWA Meta Tags (جعل الموقع يعمل كتطبيق مستقل بدون متصفح) -->
+    <!-- PWA Meta Tags -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="0xh">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="theme-color" content="#0f172a">
     <link rel="apple-touch-icon" href="0XH.jpg">
-    <!-- Manifest مدمج برمجياً لتفعيل التثبيت كبرنامج -->
     <link rel="manifest" href="data:application/manifest+json;charset=utf-8,%7B%22name%22%3A%220xh%20WhatsApp%20Direct%22%2C%22short_name%22%3A%220xh%22%2C%22start_url%22%3A%22.%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%230f172a%22%2C%22theme_color%22%3A%22%2325D366%22%2C%22icons%22%3A%5B%7B%22src%22%3A%220XH.jpg%22%2C%22sizes%22%3A%22512x512%22%2C%22type%22%3A%22image%2Fjpeg%22%7D%5D%7D">
 
     <script src="https://cdn.tailwindcss.com"></script>
@@ -55,70 +54,64 @@
             color: #1e293b;
         }
 
-        /* Important overrides for input text in light mode to be readable */
-        .light-mode input, 
-        .light-mode select, 
-        .light-mode textarea {
+        /* Readable text fixes for inputs in light mode */
+        .light-mode input, .light-mode select, .light-mode textarea {
             color: #111827 !important; 
             background-color: rgba(255,255,255,0.7) !important;
             border-color: rgba(0,0,0,0.1) !important;
         }
-        
-        .light-mode input::placeholder, 
-        .light-mode textarea::placeholder {
+        .light-mode input::placeholder, .light-mode textarea::placeholder {
             color: #6b7280 !important;
         }
-        
         .light-mode .text-white {
             color: #1e293b !important;
         }
-        
-        /* Keeping buttons colored correctly in light mode */
-        .light-mode .bg-\[\#25D366\] { color: white !important; }
-        .light-mode .bg-blue-500 { color: white !important; }
-        .light-mode .bg-red-500 { color: white !important; }
-        .light-mode #langToggle { color: white !important; background-color: #1e293b; }
 
-        .logo-container {
-            position: relative;
-            width: 120px;
-            height: 120px;
-            margin: 0 auto;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #25D366, #128C7E);
-            padding: 5px;
-            box-shadow: 0 0 25px rgba(37, 211, 102, 0.6);
-            animation: pulse-glow 3s infinite alternate;
-            z-index: 10;
+        /* Navbar Header (Top Sticky with Hide/Show Animation) */
+        #topNavbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 100;
+            transition: transform 0.4s ease-in-out, background-color 0.3s;
+        }
+        .navbar-hidden {
+            transform: translateY(-100%);
         }
 
-        .logo-img {
-            width: 100%;
-            height: 100%;
+        /* Header Logo Styling */
+        .header-logo {
+            width: 45px;
+            height: 45px;
             border-radius: 50%;
             object-fit: cover;
-            transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+            border: 2px solid #25D366;
+            box-shadow: 0 0 10px rgba(37, 211, 102, 0.5);
+            transition: transform 0.5s ease;
+        }
+        .header-logo:hover {
+            transform: rotate(360deg);
         }
 
-        .logo-container:hover .logo-img {
-            transform: rotate(360deg) scale(1.05);
+        /* Fix button flicker (hardware acceleration) */
+        .no-flicker {
+            transform: translateZ(0);
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
         }
 
-        @keyframes pulse-glow {
-            0% { box-shadow: 0 0 20px rgba(37, 211, 102, 0.4); }
-            100% { box-shadow: 0 0 40px rgba(37, 211, 102, 0.8), 0 0 15px rgba(255,255,255,0.2) inset; }
-        }
-
+        /* Particles - Instantly Generated */
         #particles {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
             z-index: 0;
             pointer-events: none;
-            overflow: hidden; /* Prevent scrolling issue from particles */
+            overflow: hidden;
         }
         
         .particle { 
-            position: absolute; /* Controlled by JS via bottom offset */
+            position: absolute; 
             border-radius: 50%; 
             animation: float-up linear infinite; 
         }
@@ -130,49 +123,47 @@
             0% { transform: translateY(0) translateX(0); opacity: 0; }
             10% { opacity: 1; }
             90% { opacity: 1; }
-            100% { transform: translateY(-120vh) translateX(50px); opacity: 0; }
+            100% { transform: translateY(-120vh) translateX(30px); opacity: 0; }
         }
 
+        /* Sun and Moon animations */
         .celestial-body {
             position: absolute; display: flex; justify-content: center; align-items: center;
             width: 100%; height: 100%; top: 0; left: 0;
         }
-
         .moon {
-            width: 22px; height: 22px;
-            background-color: transparent;
-            border-radius: 50%;
-            box-shadow: 6px 4px 0 0 #f8fafc;
-            margin-right: 6px; margin-bottom: 4px;
+            width: 22px; height: 22px; background: #e2e8f0; border-radius: 50%;
+            box-shadow: 0 0 10px rgba(255,255,255,0.5) inset; position: relative; overflow: hidden;
         }
-        .light-mode .moon { box-shadow: 6px 4px 0 0 #0f172a; }
-
+        .moon::before {
+            content: ''; position: absolute; width: 6px; height: 6px; background: rgba(0,0,0,0.15);
+            border-radius: 50%; top: 3px; left: 3px;
+            box-shadow: 7px 5px 0 -1px rgba(0,0,0,0.15);
+        }
         .sun {
-            width: 22px; height: 22px;
-            background: #FDB813;
-            border-radius: 50%;
-            box-shadow: 0 0 10px #FDB813, 0 0 20px #FDB813;
+            width: 22px; height: 22px; background: #FDB813; border-radius: 50%;
+            box-shadow: 0 0 12px #FDB813;
         }
 
         @keyframes slideDownOut {
             0% { transform: translateY(0); opacity: 1; }
-            100% { transform: translateY(40px); opacity: 0; }
+            100% { transform: translateY(30px); opacity: 0; }
         }
         @keyframes slideDownIn {
-            0% { transform: translateY(-40px); opacity: 0; }
+            0% { transform: translateY(-30px); opacity: 0; }
             100% { transform: translateY(0); opacity: 1; }
         }
-
-        .animate-out { animation: slideDownOut 0.4s forwards; }
-        .animate-in { animation: slideDownIn 0.4s forwards; }
+        .animate-out { animation: slideDownOut 0.3s forwards; }
+        .animate-in { animation: slideDownIn 0.3s forwards; }
         .hide { display: none !important; }
 
+        /* Toast notifications container fixed at top */
         #toast-container {
-            position: fixed; /* This guarantees it stays on screen regardless of scroll */
-            top: 20px;
+            position: fixed;
+            top: 75px;
             left: 50%;
             transform: translateX(-50%);
-            z-index: 9999; /* Always on top */
+            z-index: 9999;
             display: flex;
             flex-direction: column;
             gap: 10px;
@@ -180,7 +171,6 @@
             width: 90%;
             max-width: 400px;
         }
-        
         .toast {
             background: rgba(15, 23, 42, 0.95);
             backdrop-filter: blur(10px);
@@ -196,15 +186,9 @@
             animation: toastEnter 0.3s forwards;
             direction: rtl; 
         }
-        
         .toast.success { border-bottom-color: #25D366; }
-        
-        @keyframes toastEnter {
-            to { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes toastExit {
-            to { opacity: 0; transform: translateY(-20px); }
-        }
+        @keyframes toastEnter { to { opacity: 1; transform: translateY(0); } }
+        @keyframes toastExit { to { opacity: 0; transform: translateY(-20px); } }
 
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: rgba(0,0,0,0.1); }
@@ -212,58 +196,51 @@
         
         .modal { background: rgba(0,0,0,0.7); backdrop-filter: blur(5px); }
         .custom-checkbox { accent-color: #25D366; width: 1.2rem; height: 1.2rem; }
-
-        .shake-anim { animation: shake 0.3s ease-in-out; }
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-5px); }
-            75% { transform: translateX(5px); }
-        }
     </style>
 </head>
-<body class="dark-mode transition-colors duration-300" id="body">
+<body class="dark-mode transition-colors duration-300 pb-24" id="body">
     
     <!-- Background Particles -->
     <div id="particles"></div>
     
-    <!-- Smart Fixed Toasts Container -->
+    <!-- Toast Container -->
     <div id="toast-container"></div>
 
-    <!-- Top Controls (Scrolls with page) -->
-    <div class="absolute top-4 w-full px-4 flex justify-between items-center z-50" style="direction: ltr;">
-        <button id="langToggle" class="glass-panel text-white font-bold py-2 px-4 rounded-full hover:bg-white/10 transition shadow-lg">
-            EN
-        </button>
-        <button id="themeToggle" class="glass-panel w-12 h-12 rounded-full relative overflow-hidden transition shadow-lg bg-white/5">
-            <div id="moonIcon" class="celestial-body"><div class="moon"></div></div>
-            <div id="sunIcon" class="celestial-body hide"><div class="sun"></div></div>
-        </button>
-    </div>
+    <!-- Top Navbar Header (Sticky with Hide/Show on Scroll, Direction Fixed to LTR) -->
+    <header id="topNavbar" class="glass-panel py-3 px-6 flex justify-between items-center shadow-lg" style="direction: ltr;">
+        <!-- Left Side: Logo and OXH Text (Always Left due to LTR) -->
+        <div class="flex items-center gap-3">
+            <img src="0XH.jpg" alt="0xh Logo" class="header-logo" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48Y2lyY2xlIGN4PSI1MCIgY3k9IjUwIiByPSI1MCIgZmlsbD0iIzI1RDM2NiIvPjx0ZXh0IHg9IjUwIiB5PSI1NSIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjMwIiBmaWxsPSJ3aGl0ZSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZG9taW5hbnQtYmFzZWxpbmU9Im1pZGRsZSI+MHhoPC90ZXh0Pjwvc3ZnPg=='">
+            <span class="text-2xl font-black tracking-wider text-[#25D366]">OXH</span>
+        </div>
+        <!-- Right Side: Language & Theme Controls (Always Right due to LTR) -->
+        <div class="flex items-center gap-3">
+            <button id="langToggle" class="glass-panel text-white font-bold py-1.5 px-3 rounded-full hover:bg-white/10 transition text-sm">
+                EN
+            </button>
+            <button id="themeToggle" class="glass-panel w-10 h-10 rounded-full relative overflow-hidden transition">
+                <div id="moonIcon" class="celestial-body"><div class="moon"></div></div>
+                <div id="sunIcon" class="celestial-body hide"><div class="sun"></div></div>
+            </button>
+        </div>
+    </header>
 
     <!-- MAIN VIEW -->
-    <div class="container mx-auto px-4 pt-24 pb-28 flex flex-col items-center min-h-screen relative z-10" id="mainView">
+    <div class="container mx-auto px-4 pt-28 pb-12 flex flex-col items-center min-h-screen relative z-10" id="mainView">
         
         <!-- App Box -->
-        <div class="glass-panel p-8 rounded-3xl w-full max-w-md text-center transform transition-all hover:scale-[1.01]">
-            <div class="logo-container mb-6">
-                <img src="0XH.jpg" alt="0xh Logo" class="logo-img" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48Y2lyY2xlIGN4PSI1MCIgY3k9IjUwIiByPSI1MCIgZmlsbD0iIzI1RDM2NiIvPjx0ZXh0IHg9IjUwIiB5PSI1NSIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjMwIiBmaWxsPSJ3aGl0ZSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZG9taW5hbnQtYmFzZWxpbmU9Im1pZGRsZSI+MHhoPC90ZXh0Pjwvc3ZnPg=='">
-            </div>
-
-            <h1 class="text-4xl font-black mb-2 text-[#25D366]">0xh <span data-i18n="whatsapp">واتساب</span></h1>
-            <p class="text-sm opacity-80 mb-8 font-bold" data-i18n="subtitle">تواصل فوراً بدون حفظ الرقم</p>
-
+        <div class="glass-panel p-8 rounded-3xl w-full max-w-md text-center">
             <div class="space-y-4">
-                <input type="tel" id="phoneInput" class="w-full bg-white/10 border border-white/20 text-white rounded-xl px-4 py-3 text-center text-xl focus:outline-none focus:ring-2 focus:ring-[#25D366] transition placeholder-gray-400 font-bold" placeholder="أدخل الرقم (مثال: 079...)" autocomplete="off" dir="ltr">
+                <input type="tel" id="phoneInput" class="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-center text-xl focus:outline-none focus:ring-2 focus:ring-[#25D366] transition placeholder-gray-400 font-bold" placeholder="أدخل الرقم (مثال: 079...)" autocomplete="off" dir="ltr">
                 
                 <div>
-                    <input type="text" id="nameHint" maxlength="12" class="w-full bg-white/10 border border-white/20 text-white rounded-xl px-4 py-3 text-center focus:outline-none focus:ring-2 focus:ring-[#25D366] transition placeholder-gray-400" placeholder="اسم الشخص أو تلميح (اختياري)" autocomplete="off">
+                    <input type="text" id="nameHint" maxlength="12" class="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-center focus:outline-none focus:ring-2 focus:ring-[#25D366] transition placeholder-gray-400 font-bold" placeholder="اسم الشخص أو تلميح (اختياري)" autocomplete="off">
                 </div>
                 
                 <div class="relative">
-                    <select id="selectedLocation" class="w-full bg-white/10 border border-white/20 text-white rounded-xl px-4 py-3 text-center focus:outline-none focus:ring-2 focus:ring-[#25D366] transition appearance-none font-bold" style="text-align-last: center;">
+                    <select id="selectedLocation" class="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-center focus:outline-none focus:ring-2 focus:ring-[#25D366] transition appearance-none font-bold" style="text-align-last: center;">
                         <option value="" class="text-gray-800" data-i18n="noLocationSelected">بدون إرفاق موقع</option>
                         <option value="CURRENT_GPS" class="text-blue-600 font-black" data-i18n="currentGpsOption">📍 إرفاق موقعي الحالي (GPS)</option>
-                        <!-- Dynamic locations injected here -->
                     </select>
                     <div class="absolute inset-y-0 left-3 flex items-center pointer-events-none"><i class="fas fa-map-marker-alt text-[#25D366]"></i></div>
                 </div>
@@ -275,37 +252,45 @@
             </div>
         </div>
 
-        <!-- Navigation Buttons (History, Locations, Help) -->
+        <!-- Navigation Buttons -->
         <div class="w-full max-w-md space-y-4 mt-6">
-            <!-- Button to open History View -->
-            <button onclick="openHistoryView()" class="glass-panel w-full p-4 rounded-xl flex items-center justify-center gap-3 hover:bg-white/10 transition cursor-pointer group border border-blue-500/30">
-                <i class="fas fa-history text-xl text-blue-400 group-hover:rotate-180 transition duration-500"></i>
-                <span class="font-bold text-lg text-white" data-i18n="openHistoryBtn">سجل الأرقام السابقة</span>
+            <!-- History Button (Replaced glass-panel with lightweight colors to fix mobile flickering) -->
+            <button onclick="openHistoryView()" class="w-full p-4 rounded-xl flex items-center justify-between bg-white/5 hover:bg-white/10 border border-blue-500/30 transition-colors duration-300 cursor-pointer group no-flicker">
+                <div class="flex items-center gap-3">
+                    <i class="fas fa-history text-xl text-blue-400 group-hover:rotate-180 transition duration-500"></i>
+                    <span class="font-bold text-lg" data-i18n="openHistoryBtn">سجل الأرقام السابقة</span>
+                </div>
+                <i class="fas fa-chevron-left rtl:rotate-180 opacity-60"></i>
             </button>
 
-            <!-- Button to open Locations View -->
-            <button onclick="openLocationsView()" class="glass-panel w-full p-4 rounded-xl flex items-center justify-center gap-3 hover:bg-white/10 transition cursor-pointer group border border-[#25D366]/30">
-                <i class="fas fa-map-marked-alt text-xl text-[#25D366] group-hover:scale-110 transition"></i>
-                <span class="font-bold text-lg text-white" data-i18n="manageLocationsBtn">إدارة المواقع المحفوظة</span>
+            <!-- Locations Manager Button -->
+            <button onclick="openLocationsView()" class="w-full p-4 rounded-xl flex items-center justify-between bg-white/5 hover:bg-white/10 border border-[#25D366]/30 transition-colors duration-300 cursor-pointer group no-flicker">
+                <div class="flex items-center gap-3">
+                    <i class="fas fa-map-marked-alt text-xl text-[#25D366] group-hover:scale-110 transition"></i>
+                    <span class="font-bold text-lg" data-i18n="manageLocationsBtn">إدارة المواقع المحفوظة</span>
+                </div>
+                <i class="fas fa-chevron-left rtl:rotate-180 opacity-60"></i>
             </button>
 
             <!-- Help Button -->
-            <button onclick="openHelp()" class="glass-panel w-full p-4 rounded-xl flex items-center justify-center gap-3 hover:bg-white/10 transition cursor-pointer group">
-                <i class="fas fa-info-circle text-2xl text-purple-400 group-hover:scale-110 transition"></i>
-                <span class="font-bold text-lg text-white" data-i18n="howToUseBtn">كيف أستخدم الموقع؟</span>
+            <button onclick="openHelp()" class="w-full p-4 rounded-xl flex items-center justify-between bg-white/5 hover:bg-white/10 border border-purple-500/30 transition-colors duration-300 cursor-pointer group no-flicker">
+                <div class="flex items-center gap-3">
+                    <i class="fas fa-info-circle text-2xl text-purple-400 group-hover:scale-110 transition"></i>
+                    <span class="font-bold text-lg" data-i18n="howToUseBtn">كيف أستخدم الموقع؟</span>
+                </div>
+                <i class="fas fa-chevron-left rtl:rotate-180 opacity-60"></i>
             </button>
         </div>
 
-        <a href="https://link.me/mkm" target="_blank" class="absolute bottom-6 glass-panel px-6 py-2 rounded-full opacity-70 hover:opacity-100 transition-all text-xs font-bold flex items-center gap-2 overflow-hidden group">
-            <span class="relative z-10 text-white" data-i18n="watermark">تم تطوير هذا الموقع بواسطه mkm</span>
+        <a href="https://link.me/mkm" target="_blank" class="mt-12 glass-panel px-6 py-2 rounded-full opacity-70 hover:opacity-100 transition-all text-xs font-bold flex items-center gap-2 overflow-hidden group no-flicker">
+            <span class="relative z-10" data-i18n="watermark">تم تطوير هذا الموقع بواسطه mkm</span>
             <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent -translate-x-full group-hover:animate-[shimmer_1.5s_infinite] skew-x-12"></div>
         </a>
     </div>
 
-    <!-- LOCATIONS VIEW (Separate Page) -->
-    <div id="locationsView" class="hidden container mx-auto px-4 pt-24 pb-28 flex flex-col items-center min-h-screen relative z-10">
-        
-        <button onclick="closeViews()" class="w-full max-w-md glass-panel hover:bg-white/10 text-white font-bold py-3 px-4 rounded-xl shadow transition flex items-center justify-center gap-2 mb-6">
+    <!-- LOCATIONS VIEW -->
+    <div id="locationsView" class="hidden container mx-auto px-4 pt-28 pb-12 flex flex-col items-center min-h-screen relative z-10">
+        <button onclick="closeViews()" class="w-full max-w-md glass-panel hover:bg-white/10 font-bold py-3 px-4 rounded-xl shadow transition flex items-center justify-center gap-2 mb-6">
             <i class="fas fa-arrow-right rtl:rotate-0 ltr:rotate-180"></i>
             <span data-i18n="returnTop">العودة للرئيسية</span>
         </button>
@@ -319,21 +304,20 @@
                 <i class="fas fa-plus"></i> <span data-i18n="addLocationBtn">إضافة موقع جديد</span>
             </button>
 
-            <div id="locationsListContainer" class="space-y-2 max-h-[50vh] overflow-y-auto pr-1">
-                <!-- Locations dynamically loaded here -->
+            <div id="locationsListContainer" class="space-y-3 max-h-[50vh] overflow-y-auto pr-1">
+                <!-- Injected via JS -->
             </div>
         </div>
 
-        <button onclick="closeViews()" class="mt-6 w-full max-w-md bg-gradient-to-r from-[#25D366] to-[#128C7E] text-white font-bold py-4 rounded-xl shadow-lg hover:shadow-xl hover:scale-[1.02] transition-all flex items-center justify-center gap-2">
+        <button onclick="closeViews()" class="mt-6 w-full max-w-md bg-gradient-to-r from-[#25D366] to-[#128C7E] text-white font-bold py-4 rounded-xl shadow-lg hover:shadow-xl transition-all flex items-center justify-center gap-2">
             <i class="fas fa-home"></i>
             <span data-i18n="returnBottom">العودة للصفحة الرئيسية</span>
         </button>
     </div>
 
-    <!-- HISTORY VIEW (Separate Page) -->
-    <div id="historyView" class="hidden container mx-auto px-4 pt-24 pb-28 flex flex-col items-center min-h-screen relative z-10">
-        
-        <button onclick="closeViews()" class="w-full max-w-md glass-panel hover:bg-white/10 text-white font-bold py-3 px-4 rounded-xl shadow transition flex items-center justify-center gap-2 mb-6">
+    <!-- HISTORY VIEW -->
+    <div id="historyView" class="hidden container mx-auto px-4 pt-28 pb-12 flex flex-col items-center min-h-screen relative z-10">
+        <button onclick="closeViews()" class="w-full max-w-md glass-panel hover:bg-white/10 font-bold py-3 px-4 rounded-xl shadow transition flex items-center justify-center gap-2 mb-6">
             <i class="fas fa-arrow-right rtl:rotate-0 ltr:rotate-180"></i>
             <span data-i18n="returnTop">العودة للرئيسية</span>
         </button>
@@ -341,8 +325,7 @@
         <div class="glass-panel p-6 rounded-3xl w-full max-w-md">
             <div class="flex justify-between items-center mb-6 border-b border-white/10 pb-4">
                 <h2 class="text-2xl font-bold text-[#25D366]" data-i18n="historyTitle">سجل الأرقام</h2>
-                
-                <select id="historyFilter" onchange="renderHistoryDetailed()" class="bg-white/10 border border-white/20 text-white text-sm rounded-lg px-2 py-1 focus:outline-none focus:ring-1 focus:ring-[#25D366]">
+                <select id="historyFilter" onchange="renderHistoryDetailed()" class="bg-white/10 border border-white/20 text-sm rounded-lg px-2 py-1 focus:outline-none">
                     <option value="ALL" class="text-gray-800" data-i18n="filterAll">عرض الكل</option>
                     <option value="TODAY" class="text-gray-800" data-i18n="filterToday">اليوم</option>
                     <option value="YESTERDAY" class="text-gray-800" data-i18n="filterYesterday">البارحة</option>
@@ -350,10 +333,10 @@
             </div>
             
             <div class="flex justify-between items-center mb-4 px-2">
-                <button id="multiSelectBtn" onclick="toggleSelectionUI()" class="text-blue-400 hover:text-blue-300 text-sm font-bold bg-blue-500/10 px-3 py-1 rounded-lg transition">
+                <button onclick="toggleSelectionUI()" class="text-blue-400 hover:text-blue-300 text-sm font-bold bg-blue-500/10 px-3 py-1 rounded-lg transition">
                     <i class="fas fa-check-square"></i> <span data-i18n="selectBtn">تحديد للحذف</span>
                 </button>
-                <button id="clearAllBtn" onclick="confirmDeleteAll()" class="text-red-400 hover:text-red-300 text-sm font-bold bg-red-500/10 px-3 py-1 rounded-lg transition">
+                <button onclick="confirmDeleteAll()" class="text-red-400 hover:text-red-300 text-sm font-bold bg-red-500/10 px-3 py-1 rounded-lg transition">
                     <i class="fas fa-trash-alt"></i> <span data-i18n="clearHistory">مسح السجل بالكامل</span>
                 </button>
             </div>
@@ -361,103 +344,101 @@
             <div id="multiDeleteBar" class="hidden flex justify-between items-center mb-4 bg-red-500/20 p-3 rounded-xl border border-red-500/30">
                 <span class="text-sm font-bold text-red-200" id="selectedCountText">0 محدد</span>
                 <div class="flex gap-2">
-                    <button onclick="executeMultiDelete()" class="bg-red-500 text-white px-4 py-1.5 rounded-lg text-sm font-bold hover:bg-red-600 transition shadow" data-i18n="deleteSelected">حذف</button>
-                    <button onclick="toggleSelectionUI()" class="bg-gray-600 text-white px-4 py-1.5 rounded-lg text-sm hover:bg-gray-500 transition" data-i18n="cancelBtn">إلغاء</button>
+                    <button onclick="executeMultiDelete()" class="bg-red-500 text-white px-4 py-1.5 rounded-lg text-sm font-bold hover:bg-red-600 transition" data-i18n="deleteSelected">حذف</button>
+                    <button onclick="toggleSelectionUI()" class="bg-gray-600 text-white px-4 py-1.5 rounded-lg text-sm" data-i18n="cancelBtn">إلغاء</button>
                 </div>
             </div>
 
             <div id="detailedHistoryList" class="space-y-4 max-h-[60vh] overflow-y-auto pr-2 pb-4">
-                <!-- Cards injected via JS -->
+                <!-- Injected via JS -->
             </div>
         </div>
 
-        <button onclick="closeViews()" class="mt-6 w-full max-w-md bg-gradient-to-r from-[#25D366] to-[#128C7E] text-white font-bold py-4 rounded-xl shadow-lg hover:shadow-xl hover:scale-[1.02] transition-all flex items-center justify-center gap-2">
+        <button onclick="closeViews()" class="mt-6 w-full max-w-md bg-gradient-to-r from-[#25D366] to-[#128C7E] text-white font-bold py-4 rounded-xl shadow-lg hover:shadow-xl transition-all flex items-center justify-center gap-2">
             <i class="fas fa-home"></i>
             <span data-i18n="returnBottom">العودة للصفحة الرئيسية</span>
         </button>
     </div>
 
-    <!-- HELP VIEW (Separate Page) -->
-    <div id="helpView" class="hidden container mx-auto px-4 pt-24 pb-28 flex flex-col items-center min-h-screen relative z-10">
-        <button onclick="closeViews()" class="w-full max-w-md glass-panel hover:bg-white/10 text-white font-bold py-3 px-4 rounded-xl shadow transition flex items-center justify-center gap-2 mb-6">
+    <!-- HELP VIEW -->
+    <div id="helpView" class="hidden container mx-auto px-4 pt-28 pb-12 flex flex-col items-center min-h-screen relative z-10">
+        <button onclick="closeViews()" class="w-full max-w-md glass-panel hover:bg-white/10 font-bold py-3 px-4 rounded-xl shadow transition flex items-center justify-center gap-2 mb-6">
             <i class="fas fa-arrow-right rtl:rotate-0 ltr:rotate-180"></i>
             <span data-i18n="returnTop">العودة للرئيسية</span>
         </button>
 
         <div class="glass-panel p-8 rounded-3xl w-full max-w-md">
             <h1 class="text-3xl font-black mb-6 text-[#25D366] text-center" data-i18n="helpTitle">دليل الاستخدام</h1>
-            <div class="space-y-6 text-sm leading-relaxed text-white" id="helpContent">
-                <!-- Injected via JS based on lang -->
+            <div class="space-y-6 text-sm leading-relaxed" id="helpContent">
+                <!-- Injected via JS -->
             </div>
         </div>
 
-        <button onclick="closeViews()" class="mt-6 w-full max-w-md bg-gradient-to-r from-[#25D366] to-[#128C7E] text-white font-bold py-4 rounded-xl shadow-lg hover:shadow-xl hover:scale-[1.02] transition-all flex items-center justify-center gap-2">
+        <button onclick="closeViews()" class="mt-6 w-full max-w-md bg-gradient-to-r from-[#25D366] to-[#128C7E] text-white font-bold py-4 rounded-xl shadow-lg hover:shadow-xl transition-all flex items-center justify-center gap-2">
             <i class="fas fa-home"></i>
             <span data-i18n="returnBottom">العودة للصفحة الرئيسية</span>
         </button>
     </div>
 
     <!-- MODALS -->
-
-    <!-- Location Management Modal -->
+    <!-- Location Modal -->
     <div id="locManageModal" class="fixed inset-0 modal hidden flex justify-center items-center z-50 px-4">
         <div class="glass-panel p-6 rounded-2xl w-full max-w-sm transform scale-95 transition-transform duration-300" id="locManageModalContent">
-            <h3 class="text-xl font-bold mb-4 text-center text-white" id="locModalTitle" data-i18n="addLocationBtn">إضافة موقع</h3>
+            <h3 class="text-xl font-bold mb-4 text-center" id="locModalTitle" data-i18n="addLocationBtn">إضافة موقع</h3>
             <input type="hidden" id="locModalId">
-            
             <div class="space-y-3 mb-5">
-                <input type="text" id="modalLocName" maxlength="12" class="w-full bg-white/10 border border-white/20 text-white rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#25D366]" placeholder="اسم الموقع (مثال: العمل)">
-                <input type="text" id="modalLocLink" class="w-full bg-white/10 border border-white/20 text-white rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#25D366]" placeholder="رابط خرائط جوجل (Google Maps)" dir="ltr">
-                <input type="text" id="modalLocMessage" class="w-full bg-white/10 border border-white/20 text-white rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#25D366]" placeholder="الرسالة (مثال: السلام عليكم، هذا موقعي)">
+                <input type="text" id="modalLocName" maxlength="12" class="w-full bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-sm focus:outline-none" placeholder="اسم الموقع (مثال: العمل)">
+                <input type="text" id="modalLocLink" class="w-full bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-sm focus:outline-none" placeholder="رابط خرائط جوجل (Google Maps)" dir="ltr">
+                <input type="text" id="modalLocMessage" class="w-full bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-sm focus:outline-none" placeholder="الرسالة (اختياري)">
             </div>
             <div class="flex gap-2">
                 <button onclick="saveLocationModal()" class="flex-1 bg-blue-500 text-white font-bold py-2 rounded-lg hover:bg-blue-600 transition" data-i18n="saveBtn">حفظ</button>
-                <button onclick="closeLocManageModal()" class="flex-1 bg-white/10 text-white hover:bg-white/20 font-bold py-2 rounded-lg transition" data-i18n="cancelBtn">إلغاء</button>
+                <button onclick="closeLocManageModal()" class="flex-1 bg-white/10 hover:bg-white/20 font-bold py-2 rounded-lg transition" data-i18n="cancelBtn">إلغاء</button>
             </div>
         </div>
     </div>
 
-    <!-- History Item Edit Modal -->
+    <!-- Edit History Modal -->
     <div id="editHistoryModal" class="fixed inset-0 modal hidden flex justify-center items-center z-50 px-4">
         <div class="glass-panel p-6 rounded-2xl w-full max-w-sm transform scale-95 transition-transform duration-300" id="editHistoryModalContent">
-            <h3 class="text-xl font-bold mb-4 text-center text-white" data-i18n="editTitle">تعديل السجل</h3>
+            <h3 class="text-xl font-bold mb-4 text-center" data-i18n="editTitle">تعديل السجل</h3>
             <input type="hidden" id="editHistId">
             <div class="space-y-3 mb-5">
                 <div>
-                    <label class="block text-xs mb-1 opacity-70 text-white" data-i18n="phoneNumber">رقم الهاتف</label>
-                    <input type="text" id="editHistPhone" class="w-full bg-white/10 border border-white/20 text-white rounded-lg px-3 py-2 focus:outline-none focus:border-[#25D366]" dir="ltr">
+                    <label class="block text-xs mb-1 opacity-70" data-i18n="phoneNumber">رقم الهاتف</label>
+                    <input type="text" id="editHistPhone" class="w-full bg-white/10 border border-white/20 rounded-lg px-3 py-2 focus:outline-none" dir="ltr">
                 </div>
                 <div>
-                    <label class="block text-xs mb-1 opacity-70 text-white" data-i18n="nameHintLabel">الاسم / التلميح</label>
-                    <input type="text" id="editHistName" maxlength="12" class="w-full bg-white/10 border border-white/20 text-white rounded-lg px-3 py-2 focus:outline-none focus:border-[#25D366]">
+                    <label class="block text-xs mb-1 opacity-70" data-i18n="nameHintLabel">الاسم / التلميح</label>
+                    <input type="text" id="editHistName" maxlength="12" class="w-full bg-white/10 border border-white/20 rounded-lg px-3 py-2 focus:outline-none">
                 </div>
                 <div>
-                    <label class="block text-xs mb-1 opacity-70 text-white" data-i18n="notesLabel">الملاحظات</label>
-                    <textarea id="editHistNotes" rows="2" class="w-full bg-white/10 border border-white/20 text-white rounded-lg px-3 py-2 focus:outline-none focus:border-[#25D366] resize-none" placeholder="أضف ملاحظاتك هنا..."></textarea>
+                    <label class="block text-xs mb-1 opacity-70" data-i18n="notesLabel">الملاحظات</label>
+                    <textarea id="editHistNotes" rows="2" class="w-full bg-white/10 border border-white/20 rounded-lg px-3 py-2 focus:outline-none resize-none" placeholder="أضف ملاحظاتك..."></textarea>
                 </div>
             </div>
             <div class="flex gap-2">
                 <button onclick="saveHistoryEdit()" class="flex-1 bg-[#25D366] text-white font-bold py-2 rounded-lg hover:bg-green-600 transition" data-i18n="saveBtn">حفظ</button>
-                <button onclick="closeEditHistoryModal()" class="flex-1 bg-white/10 text-white hover:bg-white/20 font-bold py-2 rounded-lg transition" data-i18n="cancelBtn">إلغاء</button>
+                <button onclick="closeEditHistoryModal()" class="flex-1 bg-white/10 hover:bg-white/20 font-bold py-2 rounded-lg transition" data-i18n="cancelBtn">إلغاء</button>
             </div>
         </div>
     </div>
 
-    <!-- Delete Confirmation Modal -->
+    <!-- Delete Modal -->
     <div id="deleteModal" class="fixed inset-0 modal hidden flex justify-center items-center z-50 px-4">
         <div class="glass-panel p-6 rounded-2xl w-full max-w-sm text-center transform scale-95 transition-transform duration-300" id="deleteModalContent">
             <div class="text-red-400 text-4xl mb-3"><i class="fas fa-exclamation-triangle"></i></div>
-            <h3 class="text-lg font-bold mb-2 text-white" data-i18n="confirmDeleteTitle">تأكيد الحذف</h3>
-            <p class="text-sm text-white opacity-80 mb-5" data-i18n="confirmDeleteMsg">هل أنت متأكد أنك تريد حذف هذا العنصر؟</p>
+            <h3 class="text-lg font-bold mb-2" data-i18n="confirmDeleteTitle">تأكيد الحذف</h3>
+            <p class="text-sm opacity-80 mb-5" data-i18n="confirmDeleteMsg">هل أنت متأكد من الحذف؟</p>
             <div class="flex gap-2">
                 <button id="confirmDeleteBtn" class="flex-1 bg-red-500 text-white font-bold py-2 rounded-lg hover:bg-red-600 transition" data-i18n="yesDelete">نعم، احذف</button>
-                <button onclick="closeDeleteModal()" class="flex-1 bg-white/10 text-white hover:bg-white/20 font-bold py-2 rounded-lg transition" data-i18n="cancelBtn">إلغاء</button>
+                <button onclick="closeDeleteModal()" class="flex-1 bg-white/10 hover:bg-white/20 font-bold py-2 rounded-lg transition" data-i18n="cancelBtn">إلغاء</button>
             </div>
         </div>
     </div>
 
     <script>
-        // --- State Variables ---
+        // --- State ---
         let isDarkMode = true;
         let currentLang = 'ar';
         let history = JSON.parse(localStorage.getItem('0xh_history')) || [];
@@ -465,13 +446,11 @@
         let itemToDelete = null; 
         let selectionMode = false;
         let selectedIds = new Set();
+        let lastScrollTop = 0;
 
-        // --- Translations ---
         const translations = {
             ar: {
-                whatsapp: "واتساب",
-                subtitle: "تواصل فوراً بدون حفظ الرقم",
-                phonePlaceholder: "أدخل الرقم (مثال: 079... أو 962...)",
+                phonePlaceholder: "أدخل الرقم (مثال: 079...)",
                 namePlaceholder: "اسم الشخص أو تلميح (اختياري)",
                 transferBtn: "تحويل ومراسلة",
                 readyBtn: "جاهز! جاري النقل...",
@@ -490,7 +469,7 @@
                 notesLabel: "الملاحظات",
                 saveBtn: "حفظ",
                 confirmDeleteTitle: "تأكيد الحذف",
-                confirmDeleteMsg: "هل أنت متأكد أنك تريد الحذف؟ لا يمكن التراجع.",
+                confirmDeleteMsg: "هل أنت متأكد أنك تريد الحذف؟",
                 yesDelete: "نعم، احذف",
                 howToUseBtn: "كيف أستخدم الموقع؟",
                 helpTitle: "دليل الاستخدام",
@@ -505,18 +484,16 @@
                 filterYesterday: "البارحة",
                 errorEmptyPhone: "يرجى إدخال رقم الهاتف أولاً",
                 errorShortPhone: "الرقم المدخل قصير جداً",
-                errorLongPhone: "الرقم المدخل طويل جداً",
+                errorLongPhone: "الرقم المدخل طويل جداً (أقصى حد 15 خانة)",
                 errorNameLength: "الاسم يجب ألا يتجاوز 12 حرف",
                 toastGpsError: "تعذر الوصول للموقع. تأكد من تفعيل GPS.",
-                lblSentLocation: "تم إرسال موقع:",
+                lblSentLocation: "الموقع المرسل:",
                 lblAdded: "أضيف:",
                 lblToday: "اليوم",
                 lblYesterday: "البارحة"
             },
             en: {
-                whatsapp: "WhatsApp",
-                subtitle: "Chat instantly without saving",
-                phonePlaceholder: "Enter number (e.g. 079... or 962...)",
+                phonePlaceholder: "Enter number (e.g. 079...)",
                 namePlaceholder: "Name or hint (Optional)",
                 transferBtn: "Transfer & Message",
                 readyBtn: "Ready! Redirecting...",
@@ -535,7 +512,7 @@
                 notesLabel: "Notes",
                 saveBtn: "Save",
                 confirmDeleteTitle: "Confirm Deletion",
-                confirmDeleteMsg: "Are you sure you want to delete? This cannot be undone.",
+                confirmDeleteMsg: "Are you sure you want to delete?",
                 yesDelete: "Yes, Delete",
                 howToUseBtn: "How to use the site?",
                 helpTitle: "User Guide",
@@ -550,7 +527,7 @@
                 filterYesterday: "Yesterday",
                 errorEmptyPhone: "Please enter a phone number first",
                 errorShortPhone: "Entered number is too short",
-                errorLongPhone: "Entered number is too long",
+                errorLongPhone: "Entered number is too long (max 15 digits)",
                 errorNameLength: "Name cannot exceed 12 characters",
                 toastGpsError: "Could not access location. Ensure GPS is enabled.",
                 lblSentLocation: "Sent Location:",
@@ -560,65 +537,75 @@
             }
         };
 
-        // --- Core Application Setup ---
         function init() {
-            createParticles();
+            createParticlesInstant();
             renderLocations();
             applyLanguage();
-            setupInputIntelligence();
+            setupNavbarScroll();
+            setupClipboardIntelligence();
             
             window.addEventListener('hashchange', handleRouting);
             handleRouting();
         }
 
-        // --- STREAMING_CHUNK:Rendering Particle Effects... ---
-        function createParticles() {
+        // --- Instant Particles from bottom ---
+        function createParticlesInstant() {
             const container = document.getElementById('particles');
             if (!container) return;
             container.innerHTML = '';
-            for(let i=0; i<15; i++) {
+            for(let i=0; i<20; i++) {
                 let div = document.createElement('div');
                 div.className = 'particle';
                 let size = Math.random() * 8 + 4;
                 div.style.width = size + 'px';
                 div.style.height = size + 'px';
                 div.style.left = Math.random() * 100 + 'vw';
-                // Fixed: Start particles below screen to prevent clumping
-                div.style.bottom = '-20px'; 
-                div.style.animationDuration = (Math.random() * 10 + 5) + 's';
-                div.style.animationDelay = (Math.random() * 5) + 's';
+                div.style.bottom = '-20px'; // Start exactly at bottom
+                div.style.animationDuration = (Math.random() * 8 + 4) + 's';
+                
+                // NEGATIVE delay makes them instantly appear spread out across the screen
+                div.style.animationDelay = '-' + (Math.random() * 10) + 's';
+                
                 container.appendChild(div);
             }
         }
 
-        // --- STREAMING_CHUNK:Configuring Smart Toasts and Inputs... ---
+        // --- Navbar hide/show on scroll ---
+        function setupNavbarScroll() {
+            const navbar = document.getElementById('topNavbar');
+            window.addEventListener('scroll', () => {
+                let st = window.pageYOffset || document.documentElement.scrollTop;
+                if (st > lastScrollTop && st > 50) {
+                    navbar.classList.add('navbar-hidden'); // Scrolling down
+                } else {
+                    navbar.classList.remove('navbar-hidden'); // Scrolling up
+                }
+                lastScrollTop = st <= 0 ? 0 : st;
+            }, false);
+        }
+
         function showToast(message, isError = true) {
             const container = document.getElementById('toast-container');
             const toast = document.createElement('div');
             toast.className = `toast ${isError ? '' : 'success'}`;
-            
             const icon = isError ? '<i class="fas fa-exclamation-circle text-red-400 ml-2 rtl:mr-2"></i>' 
                                  : '<i class="fas fa-check-circle text-green-400 ml-2 rtl:mr-2"></i>';
             toast.innerHTML = `<div class="flex items-center">${icon} ${message}</div>`;
-            
             container.appendChild(toast);
-            
             setTimeout(() => {
                 toast.style.animation = 'toastExit 0.3s forwards';
                 setTimeout(() => toast.remove(), 300);
             }, 3000);
         }
 
-        function setupInputIntelligence() {
+        function setupClipboardIntelligence() {
             const phoneInput = document.getElementById('phoneInput');
             const nameHint = document.getElementById('nameHint');
             
-            // 1. Instant space removal while typing
             phoneInput.addEventListener('input', function() {
                 this.value = this.value.replace(/\s+/g, '');
             });
 
-            // 2. Auto-Paste from Clipboard
             phoneInput.addEventListener('focus', async function() {
                 if(this.value === '') {
                     try {
@@ -634,18 +621,14 @@
                 }
             });
 
-            // 3. Name Length Guard
             nameHint.addEventListener('input', function() {
                 if(this.value.length >= 12) {
                     this.value = this.value.substring(0, 12);
-                    this.classList.add('shake-anim', 'border-red-500');
                     showToast(translations[currentLang].errorNameLength, true);
-                    setTimeout(() => this.classList.remove('shake-anim', 'border-red-500'), 400);
                 }
             });
         }
 
-        // --- STREAMING_CHUNK:Handling UI Routing... ---
         function handleRouting() {
             const main = document.getElementById('mainView');
             const help = document.getElementById('helpView');
@@ -676,7 +659,6 @@
         function openLocationsView() { window.location.hash = 'locations'; }
         function closeViews() { window.location.hash = ''; selectionMode = false; }
 
-        // --- STREAMING_CHUNK:Handling Theme and Translation... ---
         document.getElementById('themeToggle').addEventListener('click', () => {
             isDarkMode = !isDarkMode;
             const body = document.getElementById('body');
@@ -685,22 +667,18 @@
 
             if (isDarkMode) {
                 body.classList.replace('light-mode', 'dark-mode');
-                sun.classList.remove('animate-in');
-                sun.classList.add('animate-out');
+                sun.classList.remove('animate-in'); sun.classList.add('animate-out');
                 setTimeout(() => {
                     sun.classList.add('hide');
-                    moon.classList.remove('hide', 'animate-out');
-                    moon.classList.add('animate-in');
-                }, 400);
+                    moon.classList.remove('hide', 'animate-out'); moon.classList.add('animate-in');
+                }, 300);
             } else {
                 body.classList.replace('dark-mode', 'light-mode');
-                moon.classList.remove('animate-in');
-                moon.classList.add('animate-out');
+                moon.classList.remove('animate-in'); moon.classList.add('animate-out');
                 setTimeout(() => {
                     moon.classList.add('hide');
-                    sun.classList.remove('hide', 'animate-out');
-                    sun.classList.add('animate-in');
-                }, 400);
+                    sun.classList.remove('hide', 'animate-out'); sun.classList.add('animate-in');
+                }, 300);
             }
         });
 
@@ -730,25 +708,20 @@
 
             if(currentLang === 'en') {
                 document.getElementById('helpContent').innerHTML = `
-                    <div><h3 class="font-bold text-lg text-blue-400 mb-1"><i class="fas fa-bolt"></i> Smart Routing & Auto-Paste:</h3><p>App instantly removes spaces. Local formats (e.g. 079) convert to +962 automatically. Recognizes copied numbers on click.</p></div>
-                    <div><h3 class="font-bold text-lg text-green-400 mb-1"><i class="fas fa-map-marker-alt"></i> Attach Location:</h3><p>Manage your saved maps via "Manage Locations" view. Select one before sending, or use GPS to fetch your live location.</p></div>
-                    <div><h3 class="font-bold text-lg text-purple-400 mb-1"><i class="fas fa-layer-group"></i> Window Management:</h3><p>History and Locations are now separated into clean, dedicated windows for better organization.</p></div>
-                    <div><h3 class="font-bold text-lg text-yellow-400 mb-1"><i class="fas fa-shield-alt"></i> App Install & Privacy:</h3><p>You can add this site to your home screen as a standalone app! All data is saved securely inside your device.</p></div>
+                    <div><h3 class="font-bold text-lg text-blue-400 mb-1"><i class="fas fa-bolt"></i> Smart Routing:</h3><p>App instantly removes spaces. Local formats (e.g. 079) convert to +962 automatically.</p></div>
+                    <div><h3 class="font-bold text-lg text-green-400 mb-1"><i class="fas fa-map-marker-alt"></i> Attach Location:</h3><p>Manage saved maps via "Manage Locations". Select one before sending, or use GPS.</p></div>
+                    <div><h3 class="font-bold text-lg text-red-400 mb-1"><i class="fas fa-exclamation-triangle"></i> Important Data Warning:</h3><p>All history and saved locations are stored locally in your browser's LocalStorage. Clearing browser cookies or cache will permanently delete these records. Make sure not to clear site data if you want to keep your history!</p></div>
                 `;
             } else {
                 document.getElementById('helpContent').innerHTML = `
                     <div><h3 class="font-bold text-lg text-blue-400 mb-1"><i class="fas fa-bolt"></i> اللصق الذكي وحذف المسافات:</h3><p>بمجرد نسخ رقم ولصقه سيتم حذف أي مسافات تلقائياً. الأرقام المحلية (079) تتحول تلقائياً لمفتاح الأردن 962.</p></div>
-                    <div><h3 class="font-bold text-lg text-green-400 mb-1"><i class="fas fa-map-marker-alt"></i> إرفاق الموقع (و GPS):</h3><p>قم بإدارة مواقعك عبر نافذة "إدارة المواقع"، أو اختر إرسال موقعك الحالي ليتم طلبه من النظام وإرفاقه فوراً.</p></div>
-                    <div><h3 class="font-bold text-lg text-purple-400 mb-1"><i class="fas fa-layer-group"></i> النوافذ المستقلة:</h3><p>تم فصل السجل وإدارة المواقع في نوافذ منفصلة لضمان أقصى درجات الترتيب والاحترافية.</p></div>
-                    <div><h3 class="font-bold text-lg text-yellow-400 mb-1"><i class="fas fa-shield-alt"></i> التثبيت والخصوصية:</h3><p>تستطيع تثبيت الموقع على شاشة هاتفك كتطبيق كامل. البيانات تُحفظ في جهازك فقط (Local Storage).</p></div>
+                    <div><h3 class="font-bold text-lg text-green-400 mb-1"><i class="fas fa-map-marker-alt"></i> إرفاق الموقع (GPS):</h3><p>قم بإدارة مواقعك عبر نافذة "إدارة المواقع"، أو اختر إرسال موقعك الحالي.</p></div>
+                    <div><h3 class="font-bold text-lg text-red-400 mb-1"><i class="fas fa-exclamation-triangle"></i> تحذير هام بشأن الحفظ (LocalStorage):</h3><p>يتم تخزين السجل والمواقع المحفوظة محلياً داخل متصفحك فقط. تنبيه: قيامك بمسح بيانات المتصفح (Cookies / Cache) أو وضع التصفح الخفي قد يؤدي إلى فقدان وحذف جميع هذه المعلومات والبيانات نهائياً!</p></div>
                 `;
             }
             renderLocations();
-            if(window.location.hash === '#history') renderHistoryDetailed();
-            if(window.location.hash === '#locations') renderLocationsManager();
         }
 
-        // --- STREAMING_CHUNK:Managing Geolocation Features... ---
         function openLocManageModal(id = null) {
             const title = document.getElementById('locModalTitle');
             if (id) {
@@ -765,19 +738,10 @@
                 document.getElementById('modalLocMessage').value = '';
                 title.innerText = translations[currentLang].addLocationBtn;
             }
-            
-            const modal = document.getElementById('locManageModal');
-            const content = document.getElementById('locManageModalContent');
-            modal.classList.remove('hidden');
-            setTimeout(() => content.classList.remove('scale-95'), 10);
+            document.getElementById('locManageModal').classList.remove('hidden');
         }
 
-        function closeLocManageModal() {
-            const modal = document.getElementById('locManageModal');
-            const content = document.getElementById('locManageModalContent');
-            content.classList.add('scale-95');
-            setTimeout(() => modal.classList.add('hidden'), 300);
-        }
+        function closeLocManageModal() { document.getElementById('locManageModal').classList.add('hidden'); }
 
         function saveLocationModal() {
             const id = document.getElementById('locModalId').value;
@@ -785,14 +749,8 @@
             const link = document.getElementById('modalLocLink').value.trim();
             const message = document.getElementById('modalLocMessage').value.trim();
 
-            if(!name || !link) {
-                showToast(currentLang === 'ar' ? 'الاسم والرابط مطلوبان' : 'Name and Link are required', true);
-                return;
-            }
-            if(name.length > 12) {
-                showToast(translations[currentLang].errorNameLength, true);
-                return;
-            }
+            if(!name || !link) { showToast('الاسم والرابط مطلوبان', true); return; }
+            if(name.length > 12) { showToast(translations[currentLang].errorNameLength, true); return; }
 
             if (id) {
                 const index = savedLocations.findIndex(l => l.id === id);
@@ -815,7 +773,6 @@
                 <option value="" class="text-gray-800">${translations[currentLang].noLocationSelected}</option>
                 <option value="CURRENT_GPS" class="text-blue-600 font-black">${currentGps}</option>
             `;
-            
             savedLocations.forEach(loc => {
                 const opt = document.createElement('option');
                 opt.value = loc.id;
@@ -828,27 +785,21 @@
         function renderLocationsManager() {
             const listContainer = document.getElementById('locationsListContainer');
             listContainer.innerHTML = '';
-            
             if(savedLocations.length === 0) {
-                listContainer.innerHTML = `<div class="text-center text-sm opacity-50 py-2 text-white">${currentLang === 'ar' ? 'لا توجد مواقع محفوظة' : 'No saved locations'}</div>`;
+                listContainer.innerHTML = `<div class="text-center text-sm opacity-50 py-2">${currentLang === 'ar' ? 'لا توجد مواقع محفوظة' : 'No saved locations'}</div>`;
                 return;
             }
-
             savedLocations.forEach(loc => {
                 const div = document.createElement('div');
-                div.className = "flex justify-between items-center bg-white/5 p-3 rounded-xl border border-white/10 hover:bg-white/10 transition group";
+                div.className = "flex justify-between items-center bg-white/5 p-3 rounded-xl border border-white/10";
                 div.innerHTML = `
                     <div class="overflow-hidden flex-1 pl-2 rtl:pr-2">
                         <h4 class="font-bold text-sm text-[#25D366] truncate">${loc.name}</h4>
-                        <p class="text-xs text-white opacity-70 truncate" dir="ltr">${loc.link}</p>
+                        <p class="text-xs opacity-70 truncate" dir="ltr">${loc.link}</p>
                     </div>
-                    <div class="flex gap-2 px-2 transition shrink-0">
-                        <button onclick="openLocManageModal('${loc.id}')" class="bg-blue-500/20 text-blue-300 hover:bg-blue-500 hover:text-white w-8 h-8 rounded-lg transition flex items-center justify-center">
-                            <i class="fas fa-pen text-xs"></i>
-                        </button>
-                        <button onclick="deleteLocation('${loc.id}')" class="bg-red-500/20 text-red-300 hover:bg-red-500 hover:text-white w-8 h-8 rounded-lg transition flex items-center justify-center">
-                            <i class="fas fa-trash text-xs"></i>
-                        </button>
+                    <div class="flex gap-2 shrink-0">
+                        <button onclick="openLocManageModal('${loc.id}')" class="bg-blue-500/20 text-blue-300 hover:bg-blue-500 hover:text-white w-8 h-8 rounded-lg transition flex items-center justify-center no-flicker"><i class="fas fa-pen text-xs"></i></button>
+                        <button onclick="deleteLocation('${loc.id}')" class="bg-red-500/20 text-red-300 hover:bg-red-500 hover:text-white w-8 h-8 rounded-lg transition flex items-center justify-center no-flicker"><i class="fas fa-trash text-xs"></i></button>
                     </div>
                 `;
                 listContainer.appendChild(div);
@@ -862,16 +813,12 @@
             renderLocationsManager();
         }
 
-        // --- STREAMING_CHUNK:Executing Direct WhatsApp Transfer... ---
         async function handleSend() {
             let phone = document.getElementById('phoneInput').value.replace(/\s+/g, '').replace(/[^0-9+]/g, '');
             let name = document.getElementById('nameHint').value.trim();
             let selectedLocId = document.getElementById('selectedLocation').value;
             
-            if (!phone) {
-                showToast(translations[currentLang].errorEmptyPhone, true);
-                return;
-            }
+            if (!phone) { showToast(translations[currentLang].errorEmptyPhone, true); return; }
             if (phone.length < 7) { showToast(translations[currentLang].errorShortPhone, true); return; }
             if (phone.length > 15) { showToast(translations[currentLang].errorLongPhone, true); return; }
             if (name.length > 12) { showToast(translations[currentLang].errorNameLength, true); return; }
@@ -919,6 +866,7 @@
                 }
             }
 
+            // Save to history
             const existingIndex = history.findIndex(item => item.phone === phone);
             if (existingIndex > -1) {
                 history[existingIndex].name = name || history[existingIndex].name;
@@ -927,13 +875,7 @@
                 history[existingIndex].date = new Date().toISOString();
             } else {
                 history.unshift({
-                    id: Date.now().toString(),
-                    phone: phone,
-                    name: name,
-                    locationSent: locationNameForHistory,
-                    messageSent: messageContentForHistory,
-                    notes: "", 
-                    date: new Date().toISOString()
+                    id: Date.now().toString(), phone, name, locationSent: locationNameForHistory, messageSent: messageContentForHistory, notes: "", date: new Date().toISOString()
                 });
             }
             if(history.length > 100) history.pop(); 
@@ -949,14 +891,13 @@
                 btnText.innerText = translations[currentLang].transferBtn;
                 window.location.href = `https://wa.me/${phone}${textParam}`;
                 
-                // Auto-clear logic
+                // Clear inputs automatically for next transaction
                 document.getElementById('phoneInput').value = '';
                 document.getElementById('nameHint').value = '';
                 document.getElementById('selectedLocation').value = '';
-            }, 500);
+            }, 400);
         }
 
-        // --- STREAMING_CHUNK:Rendering Detailed History UI... ---
         function renderHistoryDetailed() {
             const list = document.getElementById('detailedHistoryList');
             const filterValue = document.getElementById('historyFilter').value;
@@ -964,97 +905,62 @@
             
             let filteredHistory = history;
             const now = new Date();
-            
             if(filterValue === 'TODAY') {
                 filteredHistory = history.filter(h => new Date(h.date).toDateString() === now.toDateString());
             } else if (filterValue === 'YESTERDAY') {
-                const yesterday = new Date(now);
-                yesterday.setDate(yesterday.getDate() - 1);
+                const yesterday = new Date(now); yesterday.setDate(yesterday.getDate() - 1);
                 filteredHistory = history.filter(h => new Date(h.date).toDateString() === yesterday.toDateString());
             }
 
             if (filteredHistory.length === 0) {
-                list.innerHTML = `<div class="text-center text-white opacity-50 py-10 border-2 border-dashed border-white/10 rounded-xl">${currentLang === 'ar' ? 'لا يوجد سجل يطابق البحث' : 'No records found'}</div>`;
+                list.innerHTML = `<div class="text-center opacity-50 py-10 border-2 border-dashed border-white/10 rounded-xl">${currentLang === 'ar' ? 'لا يوجد سجل يطابق البحث' : 'No records found'}</div>`;
                 return;
             }
 
             filteredHistory.forEach(item => {
                 const card = document.createElement('div');
-                card.className = 'glass-panel p-4 rounded-2xl relative text-right bg-white/5 border border-white/10';
-                if(currentLang === 'en') card.classList.replace('text-right', 'text-left');
+                card.className = 'glass-panel p-4 rounded-2xl relative bg-white/5 border border-white/10';
                 
                 const itemDate = new Date(item.date);
                 let dateStr = itemDate.toLocaleDateString();
                 const timeStr = itemDate.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-                if (itemDate.toDateString() === now.toDateString()) {
-                    dateStr = translations[currentLang].lblToday;
-                } else {
-                    const yest = new Date(now); yest.setDate(yest.getDate()-1);
-                    if (itemDate.toDateString() === yest.toDateString()) dateStr = translations[currentLang].lblYesterday;
-                }
+                if (itemDate.toDateString() === now.toDateString()) dateStr = translations[currentLang].lblToday;
 
-                let checkboxHTML = selectionMode ? 
-                    `<input type="checkbox" class="custom-checkbox absolute top-4 ${currentLang === 'ar' ? 'left-4' : 'right-4'} z-10" onchange="toggleSelection('${item.id}', this.checked)" ${selectedIds.has(item.id) ? 'checked' : ''}>` : '';
-
-                let locationTag = item.locationSent ? 
-                    `<div class="inline-block mt-2 text-xs bg-blue-500/20 text-blue-300 px-2 py-1 rounded-md border border-blue-500/30 font-bold">
-                        <i class="fas fa-map-marker-alt"></i> ${translations[currentLang].lblSentLocation} ${item.locationSent}
-                    </div>` : '';
-
-                let notesSection = item.notes ? 
-                    `<div class="mt-3 pt-3 border-t border-white/10">
-                        <p class="text-xs text-[#25D366] font-bold mb-1"><i class="fas fa-sticky-note"></i> ${translations[currentLang].notesLabel}:</p>
-                        <p class="text-sm text-white opacity-90 whitespace-pre-wrap">${item.notes}</p>
-                    </div>` : '';
+                let checkboxHTML = selectionMode ? `<input type="checkbox" class="custom-checkbox absolute top-4 ${currentLang === 'ar' ? 'left-4' : 'right-4'} z-10" onchange="toggleSelection('${item.id}', this.checked)" ${selectedIds.has(item.id) ? 'checked' : ''}>` : '';
+                let locationTag = item.locationSent ? `<div class="mt-2 text-xs bg-blue-500/20 text-blue-300 px-2 py-1 rounded-md border border-blue-500/30 font-bold inline-block"><i class="fas fa-map-marker-alt"></i> ${translations[currentLang].lblSentLocation} ${item.locationSent}</div>` : '';
+                let notesSection = item.notes ? `<div class="mt-2 pt-2 border-t border-white/10"><p class="text-xs text-[#25D366] font-bold"><i class="fas fa-sticky-note"></i> ملاحظات:</p><p class="text-sm opacity-90">${item.notes}</p></div>` : '';
 
                 card.innerHTML = `
                     ${checkboxHTML}
                     <div class="flex justify-between items-start mb-2">
-                        <div class="text-xs text-white opacity-50 font-bold">${translations[currentLang].lblAdded} ${dateStr}، ${timeStr}</div>
+                        <div class="text-xs opacity-50 font-bold">${translations[currentLang].lblAdded} ${dateStr}، ${timeStr}</div>
                         <div class="flex gap-2 ${selectionMode ? 'hidden' : ''}">
-                            <button onclick="openEditHistoryModal('${item.id}')" class="bg-blue-500/20 hover:bg-blue-500 text-blue-300 hover:text-white w-7 h-7 rounded transition flex items-center justify-center">
-                                <i class="fas fa-pen text-xs"></i>
-                            </button>
-                            <button onclick="confirmDelete('${item.id}')" class="bg-red-500/20 hover:bg-red-500 text-red-300 hover:text-white w-7 h-7 rounded transition flex items-center justify-center">
-                                <i class="fas fa-trash text-xs"></i>
-                            </button>
+                            <button onclick="openEditHistoryModal('${item.id}')" class="bg-blue-500/20 hover:bg-blue-500 text-blue-300 hover:text-white w-7 h-7 rounded transition flex items-center justify-center no-flicker"><i class="fas fa-pen text-xs"></i></button>
+                            <button onclick="confirmDelete('${item.id}')" class="bg-red-500/20 hover:bg-red-500 text-red-300 hover:text-white w-7 h-7 rounded transition flex items-center justify-center no-flicker"><i class="fas fa-trash text-xs"></i></button>
                         </div>
                     </div>
-                    
-                    <div class="font-black text-2xl text-white mb-1" dir="ltr" style="text-align: ${currentLang === 'ar' ? 'right' : 'left'}">+${item.phone}</div>
-                    
+                    <div class="font-black text-2xl mb-1" dir="ltr">+${item.phone}</div>
                     ${item.name ? `<div class="font-bold text-md text-[#25D366]">${item.name}</div>` : ''}
                     ${locationTag}
                     ${notesSection}
-                    
-                    <div class="mt-4 flex gap-2">
-                        <a href="https://wa.me/${item.phone}" class="flex-1 bg-white/10 hover:bg-[#25D366] hover:text-white text-gray-300 text-center py-2 rounded-lg font-bold text-sm transition transition-colors">
-                            <i class="fab fa-whatsapp"></i> مراسلة
-                        </a>
+                    <div class="mt-3">
+                        <a href="https://wa.me/${item.phone}" class="block bg-white/10 hover:bg-[#25D366] hover:text-white text-center py-2 rounded-lg font-bold text-sm transition no-flicker"><i class="fab fa-whatsapp"></i> مراسلة سريعة</a>
                     </div>
                 `;
                 list.appendChild(card);
             });
         }
 
-        // --- STREAMING_CHUNK:Managing Multi-Select and Delete Logic... ---
         function toggleSelectionUI() {
             selectionMode = !selectionMode;
             selectedIds.clear();
-            const bar = document.getElementById('multiDeleteBar');
-            bar.classList.toggle('hidden', !selectionMode);
-            
+            document.getElementById('multiDeleteBar').classList.toggle('hidden', !selectionMode);
             renderHistoryDetailed();
-            updateSelectedCount();
+            document.getElementById('selectedCountText').innerText = `${selectedIds.size} محدد`;
         }
-
         function toggleSelection(id, isChecked) {
             isChecked ? selectedIds.add(id) : selectedIds.delete(id);
-            updateSelectedCount();
-        }
-
-        function updateSelectedCount() {
-            document.getElementById('selectedCountText').innerText = currentLang === 'ar' ? `${selectedIds.size} محدد` : `${selectedIds.size} Selected`;
+            document.getElementById('selectedCountText').innerText = `${selectedIds.size} محدد`;
         }
 
         function openEditHistoryModal(id) {
@@ -1064,76 +970,41 @@
             document.getElementById('editHistPhone').value = item.phone;
             document.getElementById('editHistName').value = item.name || '';
             document.getElementById('editHistNotes').value = item.notes || '';
-            
-            const modal = document.getElementById('editHistoryModal');
-            const content = document.getElementById('editHistoryModalContent');
-            modal.classList.remove('hidden');
-            setTimeout(() => content.classList.remove('scale-95'), 10);
+            document.getElementById('editHistoryModal').classList.remove('hidden');
         }
-
-        function closeEditHistoryModal() {
-            const modal = document.getElementById('editHistoryModal');
-            const content = document.getElementById('editHistoryModalContent');
-            content.classList.add('scale-95');
-            setTimeout(() => modal.classList.add('hidden'), 300);
-        }
-
+        function closeEditHistoryModal() { document.getElementById('editHistoryModal').classList.add('hidden'); }
         function saveHistoryEdit() {
             const id = document.getElementById('editHistId').value;
             const phone = document.getElementById('editHistPhone').value.trim().replace(/\s+/g, '');
             const name = document.getElementById('editHistName').value.trim();
             const notes = document.getElementById('editHistNotes').value.trim();
-            
-            if (!phone) { showToast(translations[currentLang].errorEmptyPhone, true); return; }
-            if (name.length > 12) { showToast(translations[currentLang].errorNameLength, true); return; }
-
+            if (!phone) { showToast('الرقم مطلوب', true); return; }
             const index = history.findIndex(h => h.id === id);
             if (index > -1) {
-                history[index].phone = phone;
-                history[index].name = name;
-                history[index].notes = notes;
+                history[index].phone = phone; history[index].name = name; history[index].notes = notes;
                 localStorage.setItem('0xh_history', JSON.stringify(history));
                 renderHistoryDetailed();
             }
             closeEditHistoryModal();
-            showToast(currentLang === 'ar' ? 'تم الحفظ' : 'Saved', false);
+            showToast('تم التعديل بنجاح', false);
         }
 
         function confirmDelete(id) { itemToDelete = id; showDeleteModal(); }
         function confirmDeleteAll() { if (history.length === 0) return; itemToDelete = 'ALL'; showDeleteModal(); }
         function executeMultiDelete() { if (selectedIds.size === 0) return; itemToDelete = 'MULTI'; showDeleteModal(); }
+        function showDeleteModal() { document.getElementById('deleteModal').classList.remove('hidden'); }
+        function closeDeleteModal() { document.getElementById('deleteModal').classList.add('hidden'); itemToDelete = null; }
+        
+        document.getElementById('confirmDeleteBtn').onclick = function() {
+            if (itemToDelete === 'ALL') history = [];
+            else if (itemToDelete === 'MULTI') { history = history.filter(h => !selectedIds.has(h.id)); toggleSelectionUI(); }
+            else history = history.filter(h => h.id !== itemToDelete);
+            localStorage.setItem('0xh_history', JSON.stringify(history));
+            renderHistoryDetailed();
+            closeDeleteModal();
+            showToast('تم الحذف بنجاح', false);
+        };
 
-        function showDeleteModal() {
-            const modal = document.getElementById('deleteModal');
-            const content = document.getElementById('deleteModalContent');
-            modal.classList.remove('hidden');
-            setTimeout(() => content.classList.remove('scale-95'), 10);
-
-            document.getElementById('confirmDeleteBtn').onclick = function() {
-                if (itemToDelete === 'ALL') {
-                    history = [];
-                } else if (itemToDelete === 'MULTI') {
-                    history = history.filter(h => !selectedIds.has(h.id));
-                    toggleSelectionUI(); 
-                } else {
-                    history = history.filter(h => h.id !== itemToDelete);
-                }
-                
-                localStorage.setItem('0xh_history', JSON.stringify(history));
-                renderHistoryDetailed();
-                closeDeleteModal();
-                showToast(currentLang === 'ar' ? 'تم الحذف' : 'Deleted', false);
-            };
-        }
-        function closeDeleteModal() {
-            const modal = document.getElementById('deleteModal');
-            const content = document.getElementById('deleteModalContent');
-            content.classList.add('scale-95');
-            setTimeout(() => modal.classList.add('hidden'), 300);
-            itemToDelete = null;
-        }
-
-        // --- Start App ---
         window.onload = init;
     </script>
 </body>

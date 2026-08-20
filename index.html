@@ -38,14 +38,38 @@
             color: #0f172a;
         }
         
+        /* Light Mode Specific Overrides for Readability */
         .light-mode .glass-panel {
-            background: rgba(255, 255, 255, 0.4);
-            border: 1px solid rgba(255, 255, 255, 0.6);
+            background: rgba(255, 255, 255, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.8);
             box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
             color: #1e293b;
         }
 
-        /* Logo Animation & Styling (Circular) */
+        .light-mode input, 
+        .light-mode select, 
+        .light-mode textarea {
+            color: #111827 !important; /* Very dark gray text */
+            background-color: rgba(255,255,255,0.7) !important;
+            border-color: rgba(0,0,0,0.1) !important;
+        }
+        
+        .light-mode input::placeholder, 
+        .light-mode textarea::placeholder {
+            color: #6b7280 !important; /* Gray placeholder */
+        }
+        
+        .light-mode .text-white {
+            color: #1e293b !important; /* Convert structural white text to dark */
+        }
+        
+        /* Ensure buttons keep their specific text colors even in light mode */
+        .light-mode .bg-\[\#25D366\] { color: white !important; }
+        .light-mode .bg-blue-500 { color: white !important; }
+        .light-mode .bg-red-500 { color: white !important; }
+        .light-mode #langToggle { color: white !important; background-color: #1e293b; }
+
+        /* Logo Animation & Styling */
         .logo-container {
             position: relative;
             width: 120px;
@@ -56,6 +80,7 @@
             padding: 5px;
             box-shadow: 0 0 25px rgba(37, 211, 102, 0.6);
             animation: pulse-glow 3s infinite alternate;
+            z-index: 10;
         }
 
         .logo-img {
@@ -82,13 +107,7 @@
             z-index: 0;
             pointer-events: none;
         }
-        
-        .particle {
-            position: absolute;
-            border-radius: 50%;
-            animation: float-up linear infinite;
-        }
-
+        .particle { position: absolute; border-radius: 50%; animation: float-up linear infinite; }
         .dark-mode .particle { background-color: rgba(37, 211, 102, 0.3); }
         .light-mode .particle { background-color: rgba(14, 165, 233, 0.2); }
 
@@ -98,118 +117,120 @@
             100% { transform: translateY(-100px) translateX(50px); opacity: 0; }
         }
 
-        /* Sun and Moon specific animations */
+        /* Celestial Bodies (Sun & Moon) fixed CSS */
         .celestial-body {
-            position: absolute;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            width: 100%;
-            height: 100%;
+            position: absolute; display: flex; justify-content: center; align-items: center;
+            width: 100%; height: 100%; top: 0; left: 0;
+        }
+
+        /* Moon - Crescent shape using box-shadow trick */
+        .moon {
+            width: 22px; height: 22px;
+            background-color: transparent;
+            border-radius: 50%;
+            box-shadow: 6px 4px 0 0 #f8fafc; /* The crescent */
+            margin-right: 6px; margin-bottom: 4px;
+        }
+        .light-mode .moon { box-shadow: 6px 4px 0 0 #0f172a; }
+
+        /* Sun - Glowing orb */
+        .sun {
+            width: 22px; height: 22px;
+            background: #FDB813;
+            border-radius: 50%;
+            box-shadow: 0 0 10px #FDB813, 0 0 20px #FDB813;
         }
 
         @keyframes slideDownOut {
             0% { transform: translateY(0); opacity: 1; }
-            100% { transform: translateY(30px); opacity: 0; }
+            100% { transform: translateY(40px); opacity: 0; }
         }
-
         @keyframes slideDownIn {
-            0% { transform: translateY(-30px); opacity: 0; }
+            0% { transform: translateY(-40px); opacity: 0; }
             100% { transform: translateY(0); opacity: 1; }
         }
 
         .animate-out { animation: slideDownOut 0.4s forwards; }
         .animate-in { animation: slideDownIn 0.4s forwards; }
+        .hide { display: none !important; }
 
-        .hide { display: none; }
-
-        /* Sun Design */
-        .sun {
-            width: 24px; height: 24px;
-            background: #FDB813;
-            border-radius: 50%;
-            box-shadow: 0 0 15px #FDB813;
-            position: relative;
+        /* Toast Notification System */
+        #toast-container {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            pointer-events: none;
+        }
+        
+        .toast {
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(10px);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-weight: bold;
+            font-size: 0.9rem;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+            border-bottom: 3px solid #ef4444; /* Default Red for error */
+            opacity: 0;
+            transform: translateY(-20px);
+            animation: toastEnter 0.3s forwards;
+            direction: rtl; /* Force RTL for Arabic text */
+        }
+        
+        .toast.success { border-bottom-color: #25D366; }
+        
+        @keyframes toastEnter {
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes toastExit {
+            to { opacity: 0; transform: translateY(-20px); }
         }
 
-        /* Moon Design (with craters) */
-        .moon {
-            width: 24px; height: 24px;
-            background: #e2e8f0;
-            border-radius: 50%;
-            box-shadow: 0 0 10px rgba(255,255,255,0.5) inset, 0 0 15px rgba(255,255,255,0.2);
-            position: relative;
-            overflow: hidden;
-        }
-        .moon::before {
-            content: ''; position: absolute;
-            width: 6px; height: 6px; background: rgba(0,0,0,0.15);
-            border-radius: 50%; top: 4px; left: 4px;
-            box-shadow: 8px 6px 0 -1px rgba(0,0,0,0.15), 4px 12px 0 -2px rgba(0,0,0,0.15);
-        }
-
-        /* Custom Scrollbar for list */
+        /* Custom Scrollbar */
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: rgba(0,0,0,0.1); }
         ::-webkit-scrollbar-thumb { background: #25D366; border-radius: 10px; }
         
-        /* Modals */
-        .modal {
-            background: rgba(0,0,0,0.6);
-            backdrop-filter: blur(5px);
-        }
+        .modal { background: rgba(0,0,0,0.7); backdrop-filter: blur(5px); }
         
-        /* UI Fixes */
-        .top-controls {
-            position: absolute;
-            top: 20px;
-            width: 100%;
-            z-index: 50;
-        }
-
         /* Checkbox styling */
-        .custom-checkbox {
-            accent-color: #25D366;
-            width: 1.2rem;
-            height: 1.2rem;
-        }
+        .custom-checkbox { accent-color: #25D366; width: 1.2rem; height: 1.2rem; }
 
-        /* Warning Text Animation */
+        .shake-anim { animation: shake 0.3s ease-in-out; }
         @keyframes shake {
             0%, 100% { transform: translateX(0); }
             25% { transform: translateX(-5px); }
             75% { transform: translateX(5px); }
         }
-        .shake-anim {
-            animation: shake 0.3s ease-in-out;
-            color: #ef4444 !important; /* Tailwind red-500 */
-        }
     </style>
 </head>
 <body class="dark-mode transition-colors duration-300" id="body">
     
-    <!-- Background Particles -->
     <div id="particles"></div>
+    <div id="toast-container"></div>
 
-    <!-- Top Controls (Scrolls with page) -->
-    <div class="top-controls px-4 flex justify-between items-center" style="direction: ltr;">
-        <!-- Language Switcher (Always Left) -->
-        <button id="langToggle" class="glass-panel text-white font-bold py-2 px-4 rounded-full hover:bg-white/10 transition z-50">
+    <!-- Top Controls -->
+    <div class="absolute top-4 w-full px-4 flex justify-between items-center z-50" style="direction: ltr;">
+        <button id="langToggle" class="glass-panel text-white font-bold py-2 px-4 rounded-full hover:bg-white/10 transition shadow-lg">
             EN
         </button>
-        <!-- Theme Toggle (Always Right) -->
-        <button id="themeToggle" class="glass-panel w-12 h-12 rounded-full relative overflow-hidden transition z-50">
+        <button id="themeToggle" class="glass-panel w-12 h-12 rounded-full relative overflow-hidden transition shadow-lg bg-white/5">
             <div id="moonIcon" class="celestial-body"><div class="moon"></div></div>
             <div id="sunIcon" class="celestial-body hide"><div class="sun"></div></div>
         </button>
     </div>
 
-    <!-- Main Content Container -->
-    <div class="container mx-auto px-4 pt-24 pb-8 flex flex-col items-center min-h-screen relative z-10" id="mainView">
+    <!-- MAIN VIEW -->
+    <div class="container mx-auto px-4 pt-24 pb-28 flex flex-col items-center min-h-screen relative z-10" id="mainView">
         
         <!-- App Box -->
         <div class="glass-panel p-8 rounded-3xl w-full max-w-md text-center transform transition-all hover:scale-[1.01]">
-            
             <div class="logo-container mb-6">
                 <img src="0XH.jpg" alt="0xh Logo" class="logo-img" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48Y2lyY2xlIGN4PSI1MCIgY3k9IjUwIiByPSI1MCIgZmlsbD0iIzI1RDM2NiIvPjx0ZXh0IHg9IjUwIiB5PSI1NSIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjMwIiBmaWxsPSJ3aGl0ZSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZG9taW5hbnQtYmFzZWxpbmU9Im1pZGRsZSI+MHhoPC90ZXh0Pjwvc3ZnPg=='">
             </div>
@@ -218,133 +239,172 @@
             <p class="text-sm opacity-80 mb-8 font-bold" data-i18n="subtitle">تواصل فوراً بدون حفظ الرقم</p>
 
             <div class="space-y-4">
-                <!-- Phone Input (Auto paste & Space removal) -->
-                <input type="tel" id="phoneInput" class="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-center text-xl focus:outline-none focus:ring-2 focus:ring-[#25D366] transition placeholder-gray-400 dark:text-white light:text-black" placeholder="أدخل الرقم (مثال: 079...)" autocomplete="off">
+                <input type="tel" id="phoneInput" class="w-full bg-white/10 border border-white/20 text-white rounded-xl px-4 py-3 text-center text-xl focus:outline-none focus:ring-2 focus:ring-[#25D366] transition placeholder-gray-400 font-bold" placeholder="أدخل الرقم (مثال: 079...)" autocomplete="off" dir="ltr">
                 
-                <!-- Name Hint (Max 12 chars) -->
                 <div>
-                    <input type="text" id="nameHint" maxlength="12" class="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-center focus:outline-none focus:ring-2 focus:ring-[#25D366] transition placeholder-gray-400 dark:text-white light:text-black" placeholder="اسم الشخص أو تلميح (اختياري)" autocomplete="off">
-                    <p id="nameHintWarning" class="text-xs text-red-400 mt-1 hidden transition-all" data-i18n="charLimitMsg">الحد الأقصى 12 حرف فقط</p>
+                    <input type="text" id="nameHint" maxlength="12" class="w-full bg-white/10 border border-white/20 text-white rounded-xl px-4 py-3 text-center focus:outline-none focus:ring-2 focus:ring-[#25D366] transition placeholder-gray-400" placeholder="اسم الشخص أو تلميح (اختياري)" autocomplete="off">
                 </div>
                 
-                <!-- Location Selection Dropdown -->
                 <div class="relative">
-                    <select id="selectedLocation" class="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-center focus:outline-none focus:ring-2 focus:ring-[#25D366] transition dark:text-white text-black appearance-none font-bold" style="text-align-last: center;">
-                        <option value="" class="text-gray-500" data-i18n="noLocationSelected">بدون إرفاق موقع</option>
-                        <option value="CURRENT_GPS" class="text-blue-500 font-black" data-i18n="currentGpsOption">📍 موقعي الحالي (GPS)</option>
-                        <!-- Dynamic locations will be loaded here -->
+                    <select id="selectedLocation" class="w-full bg-white/10 border border-white/20 text-white rounded-xl px-4 py-3 text-center focus:outline-none focus:ring-2 focus:ring-[#25D366] transition appearance-none font-bold" style="text-align-last: center;">
+                        <option value="" class="text-gray-800" data-i18n="noLocationSelected">بدون إرفاق موقع</option>
+                        <option value="CURRENT_GPS" class="text-blue-600 font-black" data-i18n="currentGpsOption">📍 إرفاق موقعي الحالي (GPS)</option>
+                        <!-- Dynamic locations -->
                     </select>
-                    <div class="absolute inset-y-0 left-3 flex items-center pointer-events-none">
-                        <i class="fas fa-map-marker-alt text-gray-400"></i>
-                    </div>
+                    <div class="absolute inset-y-0 left-3 flex items-center pointer-events-none"><i class="fas fa-map-marker-alt text-[#25D366]"></i></div>
                 </div>
 
                 <button id="sendBtn" onclick="handleSend()" class="w-full bg-gradient-to-r from-[#25D366] to-[#128C7E] text-white font-bold py-4 rounded-xl shadow-lg hover:shadow-xl hover:scale-[1.02] transition-all flex justify-center items-center gap-2">
-                    <i id="btnIcon" class="fab fa-whatsapp text-xl"></i>
-                    <span id="btnText" data-i18n="transferBtn">تحويل ومراسلة</span>
+                    <i id="btnIcon" class="fab fa-whatsapp text-2xl"></i>
+                    <span id="btnText" class="text-lg" data-i18n="transferBtn">تحويل ومراسلة</span>
                 </button>
             </div>
         </div>
 
-        <!-- History Section -->
-        <div class="glass-panel p-6 rounded-3xl mt-6 w-full max-w-md">
-            <div class="flex justify-between items-center mb-4 border-b border-white/10 pb-2">
-                <h2 class="font-bold opacity-90" data-i18n="historyTitle">الأرقام السابقة</h2>
-                <div>
-                    <button id="multiSelectBtn" onclick="toggleSelectionUI()" class="text-blue-400 hover:text-blue-300 text-sm mx-2 font-bold">
-                        <i class="fas fa-check-square"></i> <span data-i18n="selectBtn">تحديد</span>
-                    </button>
-                    <button id="clearAllBtn" onclick="confirmDeleteAll()" class="text-red-400 hover:text-red-300 text-sm font-bold">
-                        <i class="fas fa-trash-alt"></i> <span data-i18n="clearHistory">مسح السجل</span>
-                    </button>
-                </div>
-            </div>
-            
-            <div id="multiDeleteBar" class="hidden flex justify-between items-center mb-4 bg-red-500/20 p-2 rounded-lg border border-red-500/30">
-                <span class="text-sm font-bold text-red-200" id="selectedCountText">0 محدد</span>
-                <div>
-                    <button onclick="executeMultiDelete()" class="bg-red-500 text-white px-3 py-1 rounded text-sm font-bold mr-2 hover:bg-red-600 transition" data-i18n="deleteSelected">حذف المحدد</button>
-                    <button onclick="toggleSelectionUI()" class="text-gray-300 text-sm hover:text-white" data-i18n="cancelBtn">إلغاء</button>
-                </div>
-            </div>
+        <!-- Button to open History View -->
+        <button onclick="openHistoryView()" class="mt-6 glass-panel w-full max-w-md p-4 rounded-xl flex items-center justify-center gap-3 hover:bg-white/10 transition cursor-pointer group border border-blue-500/30">
+            <i class="fas fa-history text-xl text-blue-400 group-hover:rotate-180 transition duration-500"></i>
+            <span class="font-bold text-lg text-white" data-i18n="openHistoryBtn">عرض سجل الأرقام السابقة</span>
+        </button>
 
-            <div id="historyList" class="space-y-2 max-h-60 overflow-y-auto pr-1">
-                <!-- History items will appear here -->
-            </div>
-        </div>
-
-        <!-- Locations Management Section -->
+        <!-- Locations Management Section (Clean UI with Modal) -->
         <div class="glass-panel p-6 rounded-3xl mt-6 w-full max-w-md">
-            <h2 class="font-bold opacity-90 mb-4 border-b border-white/10 pb-2" data-i18n="manageLocationsTitle">إدارة المواقع الجغرافية</h2>
+            <h2 class="font-bold text-white opacity-90 mb-4 border-b border-white/10 pb-2" data-i18n="manageLocationsTitle">إدارة المواقع الجغرافية</h2>
             
-            <button onclick="openLocationModal()" class="w-full bg-blue-500/80 hover:bg-blue-600 text-white font-bold py-3 rounded-xl transition text-sm flex justify-center items-center gap-2 mb-4 shadow-lg">
-                <i class="fas fa-plus"></i> <span data-i18n="addLocationBtn">إضافة موقع</span>
+            <button onclick="openLocManageModal()" class="w-full bg-blue-500/80 hover:bg-blue-600 text-white font-bold py-3 rounded-xl transition text-sm flex justify-center items-center gap-2 shadow-lg mb-4">
+                <i class="fas fa-plus"></i> <span data-i18n="addLocationBtn">إضافة موقع جديد</span>
             </button>
 
             <div id="locationsListContainer" class="space-y-2 max-h-40 overflow-y-auto pr-1">
-                <!-- Locations will appear here -->
+                <!-- Locations dynamically loaded here -->
             </div>
         </div>
 
         <!-- Help Button -->
         <button onclick="openHelp()" class="mt-6 glass-panel w-full max-w-md p-4 rounded-xl flex items-center justify-center gap-3 hover:bg-white/10 transition cursor-pointer group">
             <i class="fas fa-info-circle text-2xl text-[#25D366] group-hover:scale-110 transition"></i>
-            <span class="font-bold text-lg" data-i18n="howToUseBtn">كيف أستخدم الموقع؟</span>
+            <span class="font-bold text-lg text-white" data-i18n="howToUseBtn">كيف أستخدم الموقع؟</span>
         </button>
 
-        <!-- Watermark -->
-        <a href="https://link.me/mkm" target="_blank" class="mt-12 mb-4 glass-panel px-6 py-2 rounded-full opacity-60 hover:opacity-100 transition-all text-xs font-bold flex items-center gap-2 overflow-hidden relative group">
-            <span class="relative z-10" data-i18n="watermark">تم تطوير هذا الموقع بواسطه mkm</span>
+        <a href="https://link.me/mkm" target="_blank" class="absolute bottom-6 glass-panel px-6 py-2 rounded-full opacity-70 hover:opacity-100 transition-all text-xs font-bold flex items-center gap-2 overflow-hidden group">
+            <span class="relative z-10 text-white" data-i18n="watermark">تم تطوير هذا الموقع بواسطه mkm</span>
             <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent -translate-x-full group-hover:animate-[shimmer_1.5s_infinite] skew-x-12"></div>
         </a>
     </div>
 
-    <!-- Help / Guide View (Hidden by default) -->
-    <div id="helpView" class="hidden container mx-auto px-4 pt-10 pb-8 flex flex-col items-center min-h-screen relative z-10">
+    <!-- HISTORY VIEW (Separate Page) -->
+    <div id="historyView" class="hidden container mx-auto px-4 pt-24 pb-28 flex flex-col items-center min-h-screen relative z-10">
         
-        <!-- Top Return Button -->
-        <button onclick="closeHelp()" class="w-full max-w-md bg-white/10 hover:bg-white/20 border border-white/20 text-white font-bold py-3 px-4 rounded-xl shadow transition flex items-center justify-center gap-2 mb-6">
+        <button onclick="closeViews()" class="w-full max-w-md glass-panel hover:bg-white/10 text-white font-bold py-3 px-4 rounded-xl shadow transition flex items-center justify-center gap-2 mb-6">
+            <i class="fas fa-arrow-right rtl:rotate-0 ltr:rotate-180"></i>
+            <span data-i18n="returnTop">العودة للرئيسية</span>
+        </button>
+
+        <div class="glass-panel p-6 rounded-3xl w-full max-w-md">
+            <div class="flex justify-between items-center mb-6 border-b border-white/10 pb-4">
+                <h2 class="text-2xl font-bold text-[#25D366]" data-i18n="historyTitle">سجل الأرقام</h2>
+                
+                <!-- Filter Dropdown -->
+                <select id="historyFilter" onchange="renderHistoryDetailed()" class="bg-white/10 border border-white/20 text-white text-sm rounded-lg px-2 py-1 focus:outline-none focus:ring-1 focus:ring-[#25D366]">
+                    <option value="ALL" class="text-gray-800" data-i18n="filterAll">عرض الكل</option>
+                    <option value="TODAY" class="text-gray-800" data-i18n="filterToday">اليوم</option>
+                    <option value="YESTERDAY" class="text-gray-800" data-i18n="filterYesterday">البارحة</option>
+                </select>
+            </div>
+            
+            <!-- Controls (Select / Delete All) -->
+            <div class="flex justify-between items-center mb-4 px-2">
+                <button id="multiSelectBtn" onclick="toggleSelectionUI()" class="text-blue-400 hover:text-blue-300 text-sm font-bold bg-blue-500/10 px-3 py-1 rounded-lg transition">
+                    <i class="fas fa-check-square"></i> <span data-i18n="selectBtn">تحديد للحدث</span>
+                </button>
+                <button id="clearAllBtn" onclick="confirmDeleteAll()" class="text-red-400 hover:text-red-300 text-sm font-bold bg-red-500/10 px-3 py-1 rounded-lg transition">
+                    <i class="fas fa-trash-alt"></i> <span data-i18n="clearHistory">مسح كامل السجل</span>
+                </button>
+            </div>
+
+            <!-- Multi-delete Action Bar -->
+            <div id="multiDeleteBar" class="hidden flex justify-between items-center mb-4 bg-red-500/20 p-3 rounded-xl border border-red-500/30">
+                <span class="text-sm font-bold text-red-200" id="selectedCountText">0 محدد</span>
+                <div class="flex gap-2">
+                    <button onclick="executeMultiDelete()" class="bg-red-500 text-white px-4 py-1.5 rounded-lg text-sm font-bold hover:bg-red-600 transition shadow" data-i18n="deleteSelected">حذف</button>
+                    <button onclick="toggleSelectionUI()" class="bg-gray-600 text-white px-4 py-1.5 rounded-lg text-sm hover:bg-gray-500 transition" data-i18n="cancelBtn">إلغاء</button>
+                </div>
+            </div>
+
+            <!-- Detailed Cards Container -->
+            <div id="detailedHistoryList" class="space-y-4 max-h-[60vh] overflow-y-auto pr-2 pb-4">
+                <!-- Cards injected via JS -->
+            </div>
+        </div>
+
+        <button onclick="closeViews()" class="mt-6 w-full max-w-md bg-gradient-to-r from-[#25D366] to-[#128C7E] text-white font-bold py-4 rounded-xl shadow-lg hover:shadow-xl hover:scale-[1.02] transition-all flex items-center justify-center gap-2">
+            <i class="fas fa-home"></i>
+            <span data-i18n="returnBottom">العودة للصفحة الرئيسية</span>
+        </button>
+    </div>
+
+    <!-- HELP VIEW (Separate Page) -->
+    <div id="helpView" class="hidden container mx-auto px-4 pt-24 pb-28 flex flex-col items-center min-h-screen relative z-10">
+        <button onclick="closeViews()" class="w-full max-w-md glass-panel hover:bg-white/10 text-white font-bold py-3 px-4 rounded-xl shadow transition flex items-center justify-center gap-2 mb-6">
             <i class="fas fa-arrow-right rtl:rotate-0 ltr:rotate-180"></i>
             <span data-i18n="returnTop">العودة للرئيسية</span>
         </button>
 
         <div class="glass-panel p-8 rounded-3xl w-full max-w-md">
             <h1 class="text-3xl font-black mb-6 text-[#25D366] text-center" data-i18n="helpTitle">دليل الاستخدام</h1>
-            
-            <div class="space-y-6 text-sm leading-relaxed" id="helpContent">
-                <!-- Generated by JS -->
+            <div class="space-y-6 text-sm leading-relaxed text-white" id="helpContent">
+                <!-- Injected via JS based on lang -->
             </div>
         </div>
 
-        <!-- Bottom Return Button -->
-        <button onclick="closeHelp()" class="mt-6 w-full max-w-md bg-gradient-to-r from-[#25D366] to-[#128C7E] text-white font-bold py-4 rounded-xl shadow-lg hover:shadow-xl hover:scale-[1.02] transition-all flex items-center justify-center gap-2">
+        <button onclick="closeViews()" class="mt-6 w-full max-w-md bg-gradient-to-r from-[#25D366] to-[#128C7E] text-white font-bold py-4 rounded-xl shadow-lg hover:shadow-xl hover:scale-[1.02] transition-all flex items-center justify-center gap-2">
             <i class="fas fa-home"></i>
             <span data-i18n="returnBottom">العودة للصفحة الرئيسية</span>
         </button>
-
-        <!-- Watermark in Help View -->
-        <a href="https://link.me/mkm" target="_blank" class="mt-12 mb-4 glass-panel px-6 py-2 rounded-full opacity-60 hover:opacity-100 transition-all text-xs font-bold flex items-center gap-2 overflow-hidden relative group">
-            <span class="relative z-10" data-i18n="watermark">تم تطوير هذا الموقع بواسطه mkm</span>
-        </a>
     </div>
 
-    <!-- Edit History Modal -->
-    <div id="editModal" class="fixed inset-0 modal hidden flex justify-center items-center z-50 px-4">
-        <div class="glass-panel p-6 rounded-2xl w-full max-w-sm transform scale-95 transition-transform duration-300" id="editModalContent">
-            <h3 class="text-xl font-bold mb-4 text-center" data-i18n="editTitle">تعديل السجل</h3>
-            <input type="hidden" id="editId">
-            <div class="mb-3">
-                <label class="block text-xs mb-1 opacity-70" data-i18n="phoneNumber">رقم الهاتف</label>
-                <input type="text" id="editPhone" class="w-full bg-white/10 border border-white/20 rounded-lg px-3 py-2 focus:outline-none focus:border-[#25D366]">
-            </div>
-            <div class="mb-5">
-                <label class="block text-xs mb-1 opacity-70" data-i18n="nameHintLabel">الاسم / التلميح</label>
-                <input type="text" id="editName" maxlength="12" class="w-full bg-white/10 border border-white/20 rounded-lg px-3 py-2 focus:outline-none focus:border-[#25D366]">
-                <p id="editNameWarning" class="text-xs text-red-400 mt-1 hidden" data-i18n="charLimitMsg">الحد الأقصى 12 حرف فقط</p>
+    <!-- MODALS -->
+
+    <!-- Location Management Modal -->
+    <div id="locManageModal" class="fixed inset-0 modal hidden flex justify-center items-center z-50 px-4">
+        <div class="glass-panel p-6 rounded-2xl w-full max-w-sm transform scale-95 transition-transform duration-300" id="locManageModalContent">
+            <h3 class="text-xl font-bold mb-4 text-center text-white" id="locModalTitle" data-i18n="addLocationBtn">إضافة موقع</h3>
+            <input type="hidden" id="locModalId">
+            
+            <div class="space-y-3 mb-5">
+                <input type="text" id="modalLocName" maxlength="12" class="w-full bg-white/10 border border-white/20 text-white rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#25D366]" placeholder="اسم الموقع (مثال: العمل)">
+                <input type="text" id="modalLocLink" class="w-full bg-white/10 border border-white/20 text-white rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#25D366]" placeholder="رابط خرائط جوجل (Google Maps)" dir="ltr">
+                <input type="text" id="modalLocMessage" class="w-full bg-white/10 border border-white/20 text-white rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#25D366]" placeholder="الرسالة (مثال: السلام عليكم، هذا موقعي)">
             </div>
             <div class="flex gap-2">
-                <button onclick="saveEdit()" class="flex-1 bg-[#25D366] text-white font-bold py-2 rounded-lg hover:bg-green-600 transition" data-i18n="saveBtn">حفظ</button>
-                <button onclick="closeEditModal()" class="flex-1 bg-white/10 hover:bg-white/20 text-white font-bold py-2 rounded-lg transition" data-i18n="cancelBtn">إلغاء</button>
+                <button onclick="saveLocationModal()" class="flex-1 bg-blue-500 text-white font-bold py-2 rounded-lg hover:bg-blue-600 transition" data-i18n="saveBtn">حفظ</button>
+                <button onclick="closeLocManageModal()" class="flex-1 bg-white/10 text-white hover:bg-white/20 font-bold py-2 rounded-lg transition" data-i18n="cancelBtn">إلغاء</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- History Item Edit Modal (Includes Notes) -->
+    <div id="editHistoryModal" class="fixed inset-0 modal hidden flex justify-center items-center z-50 px-4">
+        <div class="glass-panel p-6 rounded-2xl w-full max-w-sm transform scale-95 transition-transform duration-300" id="editHistoryModalContent">
+            <h3 class="text-xl font-bold mb-4 text-center text-white" data-i18n="editTitle">تعديل السجل</h3>
+            <input type="hidden" id="editHistId">
+            <div class="space-y-3 mb-5">
+                <div>
+                    <label class="block text-xs mb-1 opacity-70 text-white" data-i18n="phoneNumber">رقم الهاتف</label>
+                    <input type="text" id="editHistPhone" class="w-full bg-white/10 border border-white/20 text-white rounded-lg px-3 py-2 focus:outline-none focus:border-[#25D366]" dir="ltr">
+                </div>
+                <div>
+                    <label class="block text-xs mb-1 opacity-70 text-white" data-i18n="nameHintLabel">الاسم / التلميح</label>
+                    <input type="text" id="editHistName" maxlength="12" class="w-full bg-white/10 border border-white/20 text-white rounded-lg px-3 py-2 focus:outline-none focus:border-[#25D366]">
+                </div>
+                <div>
+                    <label class="block text-xs mb-1 opacity-70 text-white" data-i18n="notesLabel">الملاحظات</label>
+                    <textarea id="editHistNotes" rows="2" class="w-full bg-white/10 border border-white/20 text-white rounded-lg px-3 py-2 focus:outline-none focus:border-[#25D366] resize-none" placeholder="أضف ملاحظاتك هنا..."></textarea>
+                </div>
+            </div>
+            <div class="flex gap-2">
+                <button onclick="saveHistoryEdit()" class="flex-1 bg-[#25D366] text-white font-bold py-2 rounded-lg hover:bg-green-600 transition" data-i18n="saveBtn">حفظ التعديلات</button>
+                <button onclick="closeEditHistoryModal()" class="flex-1 bg-white/10 text-white hover:bg-white/20 font-bold py-2 rounded-lg transition" data-i18n="cancelBtn">إلغاء</button>
             </div>
         </div>
     </div>
@@ -353,38 +413,15 @@
     <div id="deleteModal" class="fixed inset-0 modal hidden flex justify-center items-center z-50 px-4">
         <div class="glass-panel p-6 rounded-2xl w-full max-w-sm text-center transform scale-95 transition-transform duration-300" id="deleteModalContent">
             <div class="text-red-400 text-4xl mb-3"><i class="fas fa-exclamation-triangle"></i></div>
-            <h3 class="text-lg font-bold mb-2" data-i18n="confirmDeleteTitle">تأكيد الحذف</h3>
-            <p class="text-sm opacity-80 mb-5" data-i18n="confirmDeleteMsg">هل أنت متأكد أنك تريد حذف هذا العنصر؟ لا يمكن التراجع عن هذا الإجراء.</p>
+            <h3 class="text-lg font-bold mb-2 text-white" data-i18n="confirmDeleteTitle">تأكيد الحذف</h3>
+            <p class="text-sm text-white opacity-80 mb-5" data-i18n="confirmDeleteMsg">هل أنت متأكد أنك تريد حذف هذا العنصر؟</p>
             <div class="flex gap-2">
                 <button id="confirmDeleteBtn" class="flex-1 bg-red-500 text-white font-bold py-2 rounded-lg hover:bg-red-600 transition" data-i18n="yesDelete">نعم، احذف</button>
-                <button onclick="closeDeleteModal()" class="flex-1 bg-white/10 hover:bg-white/20 font-bold py-2 rounded-lg transition" data-i18n="cancelBtn">إلغاء</button>
+                <button onclick="closeDeleteModal()" class="flex-1 bg-white/10 text-white hover:bg-white/20 font-bold py-2 rounded-lg transition" data-i18n="cancelBtn">إلغاء</button>
             </div>
         </div>
     </div>
 
-    <!-- Add/Edit Location Modal -->
-    <div id="locationModal" class="fixed inset-0 modal hidden flex justify-center items-center z-50 px-4">
-        <div class="glass-panel p-6 rounded-2xl w-full max-w-sm transform scale-95 transition-transform duration-300" id="locationModalContent">
-            <h3 class="text-xl font-bold mb-4 text-center" id="locationModalTitle" data-i18n="addLocationBtn">إضافة موقع</h3>
-            <input type="hidden" id="locModalId">
-            
-            <div class="space-y-3 mb-5">
-                <div>
-                    <input type="text" id="modalLocName" maxlength="12" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#25D366] transition placeholder-gray-400 dark:text-white light:text-black" placeholder="اسم الموقع (مثال: منزل الزرقاء)">
-                    <p id="locNameWarning" class="text-xs text-red-400 mt-1 hidden" data-i18n="charLimitMsg">الحد الأقصى 12 حرف فقط</p>
-                </div>
-                <input type="text" id="modalLocLink" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#25D366] transition placeholder-gray-400 dark:text-white light:text-black" placeholder="رابط خرائط جوجل (Google Maps)" dir="ltr">
-                <input type="text" id="modalLocMessage" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#25D366] transition placeholder-gray-400 dark:text-white light:text-black" placeholder="الرسالة المرفقة (مثال: السلام عليكم، هذا موقعي)">
-            </div>
-
-            <div class="flex gap-2">
-                <button onclick="saveLocation()" class="flex-1 bg-[#25D366] text-white font-bold py-2 rounded-lg hover:bg-green-600 transition" data-i18n="saveBtn">حفظ</button>
-                <button onclick="closeLocationModal()" class="flex-1 bg-white/10 hover:bg-white/20 text-white font-bold py-2 rounded-lg transition" data-i18n="cancelBtn">إلغاء</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Script -->
     <script>
         // --- State Variables ---
         let isDarkMode = true;
@@ -395,25 +432,27 @@
         let selectionMode = false;
         let selectedIds = new Set();
 
-        // --- Translations Dictionary ---
+        // --- Translations ---
         const translations = {
             ar: {
                 whatsapp: "واتساب",
                 subtitle: "تواصل فوراً بدون حفظ الرقم",
-                phonePlaceholder: "أدخل الرقم (النسخ واللصق مدعوم)",
+                phonePlaceholder: "أدخل الرقم (مثال: 079... أو 962...)",
                 namePlaceholder: "اسم الشخص أو تلميح (اختياري)",
                 transferBtn: "تحويل ومراسلة",
                 readyBtn: "جاهز! جاري النقل...",
                 loadingGps: "جاري تحديد الموقع...",
-                historyTitle: "الأرقام السابقة",
-                clearHistory: "مسح السجل",
-                selectBtn: "تحديد",
+                openHistoryBtn: "عرض سجل الأرقام السابقة",
+                historyTitle: "سجل الأرقام",
+                clearHistory: "مسح كامل السجل",
+                selectBtn: "تحديد للحذف",
                 cancelBtn: "إلغاء",
                 deleteSelected: "حذف المحدد",
                 watermark: "تم تطوير هذا الموقع بواسطه mkm",
                 editTitle: "تعديل السجل",
                 phoneNumber: "رقم الهاتف",
                 nameHintLabel: "الاسم / التلميح",
+                notesLabel: "الملاحظات",
                 saveBtn: "حفظ",
                 confirmDeleteTitle: "تأكيد الحذف",
                 confirmDeleteMsg: "هل أنت متأكد أنك تريد الحذف؟ لا يمكن التراجع.",
@@ -423,29 +462,41 @@
                 returnTop: "العودة للرئيسية",
                 returnBottom: "العودة للصفحة الرئيسية",
                 manageLocationsTitle: "إدارة المواقع الجغرافية",
-                addLocationBtn: "إضافة موقع",
+                addLocationBtn: "إضافة موقع جديد",
                 noLocationSelected: "بدون إرفاق موقع",
-                currentGpsOption: "📍 موقعي الحالي (GPS)",
-                charLimitMsg: "الحد الأقصى 12 حرف فقط",
-                gpsError: "تعذر الوصول للموقع. تأكد من تفعيل الـ GPS وإعطاء الصلاحية للمتصفح."
+                currentGpsOption: "📍 إرفاق موقعي الحالي (GPS)",
+                filterAll: "عرض الكل",
+                filterToday: "اليوم",
+                filterYesterday: "البارحة",
+                errorEmptyPhone: "يرجى إدخال رقم الهاتف أولاً",
+                errorShortPhone: "الرقم المدخل قصير جداً",
+                errorLongPhone: "الرقم المدخل طويل جداً (تجاوز الحد المسموح)",
+                errorNameLength: "الاسم يجب ألا يتجاوز 12 حرف",
+                toastGpsError: "تعذر الوصول للموقع الجغرافي. تأكد من تفعيل GPS.",
+                lblSentLocation: "تم إرسال موقع:",
+                lblAdded: "أضيف:",
+                lblToday: "اليوم",
+                lblYesterday: "البارحة"
             },
             en: {
                 whatsapp: "WhatsApp",
                 subtitle: "Chat instantly without saving",
-                phonePlaceholder: "Enter number (Paste supported)",
+                phonePlaceholder: "Enter number (e.g. 079... or 962...)",
                 namePlaceholder: "Name or hint (Optional)",
                 transferBtn: "Transfer & Message",
                 readyBtn: "Ready! Redirecting...",
                 loadingGps: "Getting Location...",
-                historyTitle: "Previous Numbers",
-                clearHistory: "Clear History",
-                selectBtn: "Select",
+                openHistoryBtn: "View Previous Numbers History",
+                historyTitle: "Numbers History",
+                clearHistory: "Clear All History",
+                selectBtn: "Select to Delete",
                 cancelBtn: "Cancel",
                 deleteSelected: "Delete Selected",
                 watermark: "Developed by mkm",
                 editTitle: "Edit Record",
                 phoneNumber: "Phone Number",
                 nameHintLabel: "Name / Hint",
+                notesLabel: "Notes",
                 saveBtn: "Save",
                 confirmDeleteTitle: "Confirm Deletion",
                 confirmDeleteMsg: "Are you sure you want to delete? This cannot be undone.",
@@ -455,86 +506,133 @@
                 returnTop: "Return to Main",
                 returnBottom: "Return to Main Page",
                 manageLocationsTitle: "Manage Locations",
-                addLocationBtn: "Add Location",
+                addLocationBtn: "Add New Location",
                 noLocationSelected: "No location attached",
-                currentGpsOption: "📍 My Current Location (GPS)",
-                charLimitMsg: "Maximum 12 characters",
-                gpsError: "Could not access location. Please enable GPS and allow browser permissions."
+                currentGpsOption: "📍 Attach My Current Location (GPS)",
+                filterAll: "View All",
+                filterToday: "Today",
+                filterYesterday: "Yesterday",
+                errorEmptyPhone: "Please enter a phone number first",
+                errorShortPhone: "Entered number is too short",
+                errorLongPhone: "Entered number is too long",
+                errorNameLength: "Name cannot exceed 12 characters",
+                toastGpsError: "Could not access location. Ensure GPS is enabled.",
+                lblSentLocation: "Sent Location:",
+                lblAdded: "Added:",
+                lblToday: "Today",
+                lblYesterday: "Yesterday"
             }
         };
 
-        // --- Core Functions ---
+        // --- Core Functions & Event Listeners ---
         function init() {
             createParticles();
             renderLocations();
-            renderHistory();
             applyLanguage();
-            setupInputListeners();
+            setupInputIntelligence();
             
             window.addEventListener('hashchange', handleRouting);
             handleRouting();
         }
 
-        function handleRouting() {
-            if(window.location.hash === '#help') {
-                document.getElementById('mainView').classList.add('hidden');
-                document.getElementById('helpView').classList.remove('hidden');
-                window.scrollTo(0,0);
-            } else {
-                document.getElementById('mainView').classList.remove('hidden');
-                document.getElementById('helpView').classList.add('hidden');
+        // إنشاء الجزيئات المتحركة في الخلفية
+        function createParticles() {
+            const container = document.getElementById('particles');
+            if (!container) return;
+            container.innerHTML = ''; // تنظيف الحاوية أولاً
+            for(let i=0; i<15; i++) {
+                let div = document.createElement('div');
+                div.className = 'particle';
+                let size = Math.random() * 8 + 4;
+                div.style.width = size + 'px';
+                div.style.height = size + 'px';
+                div.style.left = Math.random() * 100 + 'vw';
+                div.style.animationDuration = (Math.random() * 10 + 5) + 's';
+                div.style.animationDelay = (Math.random() * 5) + 's';
+                container.appendChild(div);
             }
         }
 
-        function openHelp() { window.location.hash = 'help'; }
-        function closeHelp() { window.location.hash = ''; }
+        // --- Toast Notification System ---
+        function showToast(message, isError = true) {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = `toast ${isError ? '' : 'success'}`;
+            
+            const icon = isError ? '<i class="fas fa-exclamation-circle text-red-400 ml-2 rtl:mr-2"></i>' 
+                                 : '<i class="fas fa-check-circle text-green-400 ml-2 rtl:mr-2"></i>';
+            toast.innerHTML = `<div class="flex items-center">${icon} ${message}</div>`;
+            
+            container.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.style.animation = 'toastExit 0.3s forwards';
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
 
-        // --- Input Smart Features (Auto Space Remove, Clipboard, Max Length Warning) ---
-        function setupInputListeners() {
+        // --- Smart Input Features (Clipboard & Space Removal) ---
+        function setupInputIntelligence() {
             const phoneInput = document.getElementById('phoneInput');
             const nameHint = document.getElementById('nameHint');
-            const editName = document.getElementById('editName');
-            const modalLocName = document.getElementById('modalLocName');
-
-            // 1. Auto remove spaces while typing
+            
+            // 1. Instant space removal while typing
             phoneInput.addEventListener('input', function() {
                 this.value = this.value.replace(/\s+/g, '');
             });
 
-            // 2. Auto Paste from clipboard if it's a number
-            phoneInput.addEventListener('click', async function() {
+            // 2. Auto-Paste from Clipboard (Smart Detection)
+            phoneInput.addEventListener('focus', async function() {
                 if(this.value === '') {
                     try {
                         const text = await navigator.clipboard.readText();
-                        const cleaned = text.replace(/\s+/g, '');
-                        // If it contains mostly numbers (at least 7 digits)
-                        if (/^\+?[0-9]{7,15}$/.test(cleaned)) {
-                            this.value = cleaned;
+                        if(text) {
+                            // Clean text: remove spaces and dashes
+                            const cleaned = text.replace(/[\s-]/g, '');
+                            // Check if it's mostly numbers and plausible length
+                            if (/^\+?[0-9]{7,15}$/.test(cleaned)) {
+                                this.value = cleaned;
+                                showToast(currentLang === 'ar' ? 'تم لصق الرقم من الحافظة تلقائياً' : 'Number pasted from clipboard', false);
+                            }
                         }
-                    } catch (err) {
-                        // Ignore if permission denied or empty
-                    }
+                    } catch (err) { /* Ignore clipboard read errors silently */ }
                 }
             });
 
-            // 3. Max length warnings (12 chars)
-            function attachWarning(inputEl, warningElId) {
-                inputEl.addEventListener('input', function() {
-                    const warningEl = document.getElementById(warningElId);
-                    if(this.value.length >= 12) {
-                        warningEl.classList.remove('hidden');
-                        warningEl.classList.add('shake-anim');
-                        setTimeout(() => warningEl.classList.remove('shake-anim'), 300);
-                    } else {
-                        warningEl.classList.add('hidden');
-                    }
-                });
-            }
-
-            attachWarning(nameHint, 'nameHintWarning');
-            attachWarning(editName, 'editNameWarning');
-            attachWarning(modalLocName, 'locNameWarning');
+            // 3. Name Length Guard
+            nameHint.addEventListener('input', function() {
+                if(this.value.length >= 12) {
+                    this.value = this.value.substring(0, 12);
+                    this.classList.add('shake-anim', 'border-red-500');
+                    showToast(translations[currentLang].errorNameLength, true);
+                    setTimeout(() => this.classList.remove('shake-anim', 'border-red-500'), 400);
+                }
+            });
         }
+
+        // --- Routing (Views) ---
+        function handleRouting() {
+            const main = document.getElementById('mainView');
+            const help = document.getElementById('helpView');
+            const hist = document.getElementById('historyView');
+            
+            main.classList.add('hidden');
+            help.classList.add('hidden');
+            hist.classList.add('hidden');
+
+            if(window.location.hash === '#help') {
+                help.classList.remove('hidden');
+            } else if(window.location.hash === '#history') {
+                hist.classList.remove('hidden');
+                renderHistoryDetailed(); // Refresh when opening
+            } else {
+                main.classList.remove('hidden');
+            }
+            window.scrollTo(0,0);
+        }
+        function openHelp() { window.location.hash = 'help'; }
+        function openHistoryView() { window.location.hash = 'history'; }
+        function closeViews() { window.location.hash = ''; selectionMode = false; }
 
         // --- Theme & Language ---
         document.getElementById('themeToggle').addEventListener('click', () => {
@@ -574,62 +672,43 @@
             document.getElementById('html-root').setAttribute('dir', currentLang === 'ar' ? 'rtl' : 'ltr');
             document.getElementById('html-root').setAttribute('lang', currentLang);
             
+            // Updates
             document.getElementById('phoneInput').placeholder = translations[currentLang].phonePlaceholder;
             document.getElementById('nameHint').placeholder = translations[currentLang].namePlaceholder;
-            document.getElementById('modalLocName').placeholder = translations[currentLang].manageLocationsTitle; // Reusing as placeholder
-            document.getElementById('modalLocLink').placeholder = translations[currentLang].editTitle; // Reusing logic
             
             document.querySelectorAll('[data-i18n]').forEach(el => {
                 const key = el.getAttribute('data-i18n');
                 if(translations[currentLang][key]) {
-                    el.innerText = translations[currentLang][key];
+                    if(el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
+                        el.placeholder = translations[currentLang][key];
+                    } else {
+                        el.innerText = translations[currentLang][key];
+                    }
                 }
             });
 
             if(currentLang === 'en') {
                 document.getElementById('helpContent').innerHTML = `
-                    <div><h3 class="font-bold text-lg text-blue-400 mb-1"><i class="fas fa-bolt"></i> Smart Routing & Auto-Paste:</h3><p>Tap the input to auto-paste copied numbers. Spaces are removed automatically. Local numbers convert to +962.</p></div>
-                    <div><h3 class="font-bold text-lg text-green-400 mb-1"><i class="fas fa-map-marker-alt"></i> Send Location (GPS & Saved):</h3><p>Select "My Current Location (GPS)" to instantly send where you are, or save specific Maps links in "Manage Locations".</p></div>
-                    <div><h3 class="font-bold text-lg text-purple-400 mb-1"><i class="fas fa-pen"></i> Edit & Limits:</h3><p>Names are limited to 12 chars to keep the UI clean. Click the pen icon to edit records.</p></div>
-                    <div><h3 class="font-bold text-lg text-yellow-400 mb-1"><i class="fas fa-shield-alt"></i> Privacy:</h3><p>Your data and locations are saved locally on your device only.</p></div>
+                    <div><h3 class="font-bold text-lg text-blue-400 mb-1"><i class="fas fa-bolt"></i> Smart Routing & Auto-Paste:</h3><p>Tap the input to automatically paste a copied number. All spaces are removed. Local formats (e.g. 079) convert to Jordan's +962 code automatically.</p></div>
+                    <div><h3 class="font-bold text-lg text-green-400 mb-1"><i class="fas fa-map-marker-alt"></i> Attach Location:</h3><p>Select "Attach My Current Location" to fetch your GPS and send a Maps link. Or manage saved locations via the "Add New Location" button to send predefined places.</p></div>
+                    <div><h3 class="font-bold text-lg text-purple-400 mb-1"><i class="fas fa-history"></i> Detailed History:</h3><p>The history view stores all numbers, attached locations, and allows you to add custom notes to each record.</p></div>
+                    <div><h3 class="font-bold text-lg text-yellow-400 mb-1"><i class="fas fa-shield-alt"></i> Privacy First:</h3><p>Your numbers and locations are saved securely inside your browser's local storage. Nothing is sent to external servers.</p></div>
                 `;
             } else {
                 document.getElementById('helpContent').innerHTML = `
-                    <div><h3 class="font-bold text-lg text-blue-400 mb-1"><i class="fas fa-bolt"></i> اللصق الذكي وإزالة الفراغات:</h3><p>اضغط على خانة الرقم وسيتم لصق الرقم المنسوخ تلقائياً مع إزالة أي مسافات. كما يتم تحويل الأرقام المحلية للمفتاح 962.</p></div>
-                    <div><h3 class="font-bold text-lg text-green-400 mb-1"><i class="fas fa-map-marker-alt"></i> إرسال الموقع (الحالي والمحفوظ):</h3><p>اختر "موقعي الحالي (GPS)" ليقوم الموقع بإرسال خريطتك الحالية فوراً، أو قم بإضافة روابط جاهزة من "إدارة المواقع".</p></div>
-                    <div><h3 class="font-bold text-lg text-purple-400 mb-1"><i class="fas fa-pen"></i> التعديل والحماية:</h3><p>الأسماء محددة بـ 12 حرف كحد أقصى للحفاظ على جمالية الموقع. يمكنك تعديل السجل عبر أيقونة القلم.</p></div>
-                    <div><h3 class="font-bold text-lg text-yellow-400 mb-1"><i class="fas fa-shield-alt"></i> الخصوصية:</h3><p>جميع بياناتك وإحداثياتك تُعالج وتُحفظ محلياً في هاتفك فقط.</p></div>
+                    <div><h3 class="font-bold text-lg text-blue-400 mb-1"><i class="fas fa-bolt"></i> اللصق الذكي والتحويل:</h3><p>اضغط على خانة الرقم ليتم لصق الرقم المنسوخ تلقائياً مع حذف أي مسافات. الأرقام المحلية (مثل 079) تتحول تلقائياً لمفتاح الأردن 962.</p></div>
+                    <div><h3 class="font-bold text-lg text-green-400 mb-1"><i class="fas fa-map-marker-alt"></i> إرفاق الموقع الجغرافي:</h3><p>اختر "إرفاق موقعي الحالي" ليقوم الموقع بجلب إحداثياتك (GPS) وتجهيزها كرابط. أو قم بحفظ مواقعك الثابتة عبر زر "إضافة موقع جديد" لاستخدامها السريع.</p></div>
+                    <div><h3 class="font-bold text-lg text-purple-400 mb-1"><i class="fas fa-history"></i> سجل مفصل:</h3><p>نافذة السجلات تحفظ كل التفاصيل، وتتيح لك إضافة "ملاحظات" خاصة لكل رقم لسهولة التذكر.</p></div>
+                    <div><h3 class="font-bold text-lg text-yellow-400 mb-1"><i class="fas fa-shield-alt"></i> خصوصية تامة:</h3><p>البيانات تُحفظ في متصفح جهازك فقط (Local Storage) ولا تتم مشاركتها نهائياً.</p></div>
                 `;
             }
-
             renderLocations();
-            renderHistory();
+            if(window.location.hash === '#history') renderHistoryDetailed();
         }
 
-        // --- Particles ---
-        function createParticles() {
-            const container = document.getElementById('particles');
-            for(let i=0; i<15; i++) {
-                let div = document.createElement('div');
-                div.className = 'particle';
-                let size = Math.random() * 8 + 4;
-                div.style.width = size + 'px';
-                div.style.height = size + 'px';
-                div.style.left = Math.random() * 100 + 'vw';
-                div.style.animationDuration = (Math.random() * 10 + 5) + 's';
-                div.style.animationDelay = (Math.random() * 5) + 's';
-                container.appendChild(div);
-            }
-        }
-
-        // --- Location Management (Modal based) ---
-        function openLocationModal(id = null) {
-            const modal = document.getElementById('locationModal');
-            const content = document.getElementById('locationModalContent');
-            const title = document.getElementById('locationModalTitle');
-            
-            document.getElementById('locNameWarning').classList.add('hidden');
-
+        // --- Locations Management (Modal Flow) ---
+        function openLocManageModal(id = null) {
+            const title = document.getElementById('locModalTitle');
             if (id) {
                 const loc = savedLocations.find(l => l.id === id);
                 document.getElementById('locModalId').value = loc.id;
@@ -645,31 +724,38 @@
                 title.innerText = translations[currentLang].addLocationBtn;
             }
             
+            const modal = document.getElementById('locManageModal');
+            const content = document.getElementById('locManageModalContent');
             modal.classList.remove('hidden');
             setTimeout(() => content.classList.remove('scale-95'), 10);
         }
 
-        function closeLocationModal() {
-            const modal = document.getElementById('locationModal');
-            const content = document.getElementById('locationModalContent');
+        function closeLocManageModal() {
+            const modal = document.getElementById('locManageModal');
+            const content = document.getElementById('locManageModalContent');
             content.classList.add('scale-95');
             setTimeout(() => modal.classList.add('hidden'), 300);
         }
 
-        function saveLocation() {
+        function saveLocationModal() {
             const id = document.getElementById('locModalId').value;
             const name = document.getElementById('modalLocName').value.trim();
             const link = document.getElementById('modalLocLink').value.trim();
             const message = document.getElementById('modalLocMessage').value.trim();
 
-            if(!name || !link) return;
+            if(!name || !link) {
+                showToast(currentLang === 'ar' ? 'الاسم والرابط مطلوبان' : 'Name and Link are required', true);
+                return;
+            }
+            if(name.length > 12) {
+                showToast(translations[currentLang].errorNameLength, true);
+                return;
+            }
 
             if (id) {
                 const index = savedLocations.findIndex(l => l.id === id);
                 if (index > -1) {
-                    savedLocations[index].name = name;
-                    savedLocations[index].link = link;
-                    savedLocations[index].message = message;
+                    savedLocations[index] = { id, name, link, message };
                 }
             } else {
                 savedLocations.push({ id: Date.now().toString(), name, link, message });
@@ -677,29 +763,23 @@
 
             localStorage.setItem('0xh_locations', JSON.stringify(savedLocations));
             renderLocations();
-            closeLocationModal();
-        }
-
-        function deleteLocation(id) {
-            savedLocations = savedLocations.filter(loc => loc.id !== id);
-            localStorage.setItem('0xh_locations', JSON.stringify(savedLocations));
-            renderLocations();
+            closeLocManageModal();
+            showToast(currentLang === 'ar' ? 'تم الحفظ بنجاح' : 'Saved successfully', false);
         }
 
         function renderLocations() {
             const select = document.getElementById('selectedLocation');
-            
-            // Keep top two default options
+            const currentGps = translations[currentLang].currentGpsOption;
             select.innerHTML = `
-                <option value="" class="text-gray-500">${translations[currentLang].noLocationSelected}</option>
-                <option value="CURRENT_GPS" class="text-blue-500 font-black">${translations[currentLang].currentGpsOption}</option>
+                <option value="" class="text-gray-800">${translations[currentLang].noLocationSelected}</option>
+                <option value="CURRENT_GPS" class="text-blue-600 font-black">${currentGps}</option>
             `;
             
             savedLocations.forEach(loc => {
                 const opt = document.createElement('option');
                 opt.value = loc.id;
-                opt.className = "text-black";
-                opt.textContent = loc.name;
+                opt.className = "text-gray-900 font-bold";
+                opt.textContent = `📍 ${loc.name}`;
                 select.appendChild(opt);
             });
 
@@ -707,44 +787,68 @@
             listContainer.innerHTML = '';
             
             if(savedLocations.length === 0) {
-                listContainer.innerHTML = `<div class="text-center text-sm opacity-50 py-2">${currentLang === 'ar' ? 'لا توجد مواقع محفوظة' : 'No saved locations'}</div>`;
+                listContainer.innerHTML = `<div class="text-center text-sm opacity-50 py-2 text-white">${currentLang === 'ar' ? 'لا توجد مواقع محفوظة' : 'No saved locations'}</div>`;
                 return;
             }
 
             savedLocations.forEach(loc => {
                 const div = document.createElement('div');
-                div.className = "flex justify-between items-center bg-white/5 p-3 rounded-xl border border-white/10 hover:bg-white/10 transition";
+                div.className = "flex justify-between items-center bg-white/5 p-3 rounded-xl border border-white/10 hover:bg-white/10 transition group";
                 div.innerHTML = `
                     <div class="overflow-hidden flex-1 pl-2 rtl:pr-2">
-                        <h4 class="font-bold text-sm truncate">${loc.name}</h4>
-                        <p class="text-xs opacity-70 truncate" dir="ltr">${loc.link}</p>
+                        <h4 class="font-bold text-sm text-[#25D366] truncate">${loc.name}</h4>
+                        <p class="text-xs text-white opacity-70 truncate" dir="ltr">${loc.link}</p>
                     </div>
-                    <div class="flex gap-3 px-2 shrink-0">
-                        <button onclick="openLocationModal('${loc.id}')" class="text-blue-400 hover:text-blue-300 transition">
-                            <i class="fas fa-pen"></i>
+                    <div class="flex gap-2 px-2 opacity-100 sm:opacity-50 group-hover:opacity-100 transition shrink-0">
+                        <button onclick="openLocManageModal('${loc.id}')" class="bg-blue-500/20 text-blue-300 hover:bg-blue-500 hover:text-white w-8 h-8 rounded-lg transition flex items-center justify-center">
+                            <i class="fas fa-pen text-xs"></i>
                         </button>
-                        <button onclick="deleteLocation('${loc.id}')" class="text-red-400 hover:text-red-300 transition">
-                            <i class="fas fa-trash"></i>
+                        <button onclick="deleteLocation('${loc.id}')" class="bg-red-500/20 text-red-300 hover:bg-red-500 hover:text-white w-8 h-8 rounded-lg transition flex items-center justify-center">
+                            <i class="fas fa-trash text-xs"></i>
                         </button>
                     </div>
                 `;
                 listContainer.appendChild(div);
             });
         }
+        function deleteLocation(id) {
+            savedLocations = savedLocations.filter(loc => loc.id !== id);
+            localStorage.setItem('0xh_locations', JSON.stringify(savedLocations));
+            renderLocations();
+        }
 
-        // --- Main Transfer Logic (Includes GPS Async) ---
+        // --- Transfer Logic (Validation & GPS Async) ---
         async function handleSend() {
-            let phone = document.getElementById('phoneInput').value.replace(/\s+/g, '');
+            let phone = document.getElementById('phoneInput').value.replace(/\s+/g, '').replace(/[^0-9+]/g, '');
             let name = document.getElementById('nameHint').value.trim();
             let selectedLocId = document.getElementById('selectedLocation').value;
             
-            if (!phone) return;
+            // 1. Validations via Toasts
+            if (!phone) {
+                showToast(translations[currentLang].errorEmptyPhone, true);
+                document.getElementById('phoneInput').focus();
+                return;
+            }
+            if (phone.length < 7) {
+                showToast(translations[currentLang].errorShortPhone, true);
+                return;
+            }
+            if (phone.length > 15) {
+                showToast(translations[currentLang].errorLongPhone, true);
+                return;
+            }
+            if (name.length > 12) {
+                showToast(translations[currentLang].errorNameLength, true);
+                return;
+            }
 
-            // Smart Code
+            // 2. Smart Code Format
             if (phone.startsWith('07') && phone.length === 10) {
                 phone = '962' + phone.substring(1);
             } else if (phone.startsWith('00')) {
                 phone = phone.substring(2);
+            } else if (phone.startsWith('+')) {
+                phone = phone.substring(1); // WA links don't need +
             }
 
             const btn = document.getElementById('sendBtn');
@@ -753,11 +857,12 @@
 
             let textParam = "";
             let locationNameForHistory = "";
+            let messageContentForHistory = "";
 
-            // Handle GPS or Saved Location
+            // 3. Handle GPS or Location Selection
             if (selectedLocId === 'CURRENT_GPS') {
                 btn.classList.add('opacity-80', 'animate-pulse');
-                btnIcon.className = "fas fa-spinner fa-spin text-xl";
+                btnIcon.className = "fas fa-spinner fa-spin text-2xl";
                 btnText.innerText = translations[currentLang].loadingGps;
 
                 try {
@@ -767,11 +872,12 @@
                     const mapLink = `https://maps.google.com/?q=${position.coords.latitude},${position.coords.longitude}`;
                     const msg = currentLang === 'ar' ? `مرحباً، هذا هو موقعي الحالي:\n${mapLink}` : `Hello, this is my current location:\n${mapLink}`;
                     textParam = `?text=${encodeURIComponent(msg)}`;
-                    locationNameForHistory = currentLang === 'ar' ? 'موقعي الحالي' : 'Current GPS';
+                    locationNameForHistory = currentLang === 'ar' ? 'موقعي الحالي (GPS)' : 'Current GPS';
+                    messageContentForHistory = msg;
                 } catch (error) {
-                    alert(translations[currentLang].gpsError);
+                    showToast(translations[currentLang].toastGpsError, true);
                     btn.classList.remove('opacity-80', 'animate-pulse');
-                    btnIcon.className = "fab fa-whatsapp text-xl";
+                    btnIcon.className = "fab fa-whatsapp text-2xl";
                     btnText.innerText = translations[currentLang].transferBtn;
                     return;
                 }
@@ -781,14 +887,16 @@
                     const messageContent = loc.message ? `${loc.message}\n${loc.link}` : loc.link;
                     textParam = `?text=${encodeURIComponent(messageContent)}`;
                     locationNameForHistory = loc.name;
+                    messageContentForHistory = messageContent;
                 }
             }
 
-            // Save History
+            // 4. Save to History (Detailed)
             const existingIndex = history.findIndex(item => item.phone === phone);
             if (existingIndex > -1) {
                 history[existingIndex].name = name || history[existingIndex].name;
                 history[existingIndex].locationSent = locationNameForHistory || history[existingIndex].locationSent;
+                history[existingIndex].messageSent = messageContentForHistory || history[existingIndex].messageSent;
                 history[existingIndex].date = new Date().toISOString();
             } else {
                 history.unshift({
@@ -796,17 +904,18 @@
                     phone: phone,
                     name: name,
                     locationSent: locationNameForHistory,
+                    messageSent: messageContentForHistory,
+                    notes: "", // Empty notes by default
                     date: new Date().toISOString()
                 });
             }
-            if(history.length > 50) history.pop();
+            if(history.length > 100) history.pop(); // Support larger history up to 100
             localStorage.setItem('0xh_history', JSON.stringify(history));
-            renderHistory();
 
-            // Final UI and Redirect
+            // 5. Visual Finalize & Redirect
             btn.classList.remove('animate-pulse');
             btn.classList.add('scale-95', 'opacity-80');
-            btnIcon.className = "fab fa-whatsapp text-xl";
+            btnIcon.className = "fab fa-whatsapp text-2xl";
             btnText.innerText = translations[currentLang].readyBtn;
             
             setTimeout(() => {
@@ -816,141 +925,155 @@
             }, 500);
         }
 
-        // --- History Logic ---
-        function renderHistory() {
-            const list = document.getElementById('historyList');
+        // --- Detailed History Logic ---
+        function renderHistoryDetailed() {
+            const list = document.getElementById('detailedHistoryList');
+            const filterValue = document.getElementById('historyFilter').value;
             list.innerHTML = '';
             
-            if (history.length === 0) {
-                list.innerHTML = `<div class="text-center opacity-50 py-4 text-sm">${currentLang === 'ar' ? 'لا يوجد سجل' : 'No history'}</div>`;
+            // Filter logic
+            let filteredHistory = history;
+            const now = new Date();
+            
+            if(filterValue === 'TODAY') {
+                filteredHistory = history.filter(h => new Date(h.date).toDateString() === now.toDateString());
+            } else if (filterValue === 'YESTERDAY') {
+                const yesterday = new Date(now);
+                yesterday.setDate(yesterday.getDate() - 1);
+                filteredHistory = history.filter(h => new Date(h.date).toDateString() === yesterday.toDateString());
+            }
+
+            if (filteredHistory.length === 0) {
+                list.innerHTML = `<div class="text-center text-white opacity-50 py-10 border-2 border-dashed border-white/10 rounded-xl">${currentLang === 'ar' ? 'لا يوجد سجل يطابق البحث' : 'No records found'}</div>`;
                 return;
             }
 
-            history.forEach(item => {
-                const div = document.createElement('div');
-                div.className = 'flex justify-between items-center bg-white/5 p-3 rounded-xl border border-white/10 hover:bg-white/10 transition';
+            filteredHistory.forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'glass-panel p-4 rounded-2xl relative text-right bg-white/5 border border-white/10';
+                if(currentLang === 'en') card.classList.replace('text-right', 'text-left');
                 
+                // Date Formatter
+                const itemDate = new Date(item.date);
+                let dateStr = itemDate.toLocaleDateString();
+                const timeStr = itemDate.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+                if (itemDate.toDateString() === now.toDateString()) {
+                    dateStr = translations[currentLang].lblToday;
+                } else {
+                    const yest = new Date(now); yest.setDate(yest.getDate()-1);
+                    if (itemDate.toDateString() === yest.toDateString()) dateStr = translations[currentLang].lblYesterday;
+                }
+
                 let checkboxHTML = selectionMode ? 
-                    `<input type="checkbox" class="custom-checkbox mr-3 rtl:ml-3" onchange="toggleSelection('${item.id}', this.checked)" ${selectedIds.has(item.id) ? 'checked' : ''}>` : '';
+                    `<input type="checkbox" class="custom-checkbox absolute top-4 ${currentLang === 'ar' ? 'left-4' : 'right-4'} z-10" onchange="toggleSelection('${item.id}', this.checked)" ${selectedIds.has(item.id) ? 'checked' : ''}>` : '';
 
-                // Location badge if location was sent
-                let locBadge = item.locationSent ? 
-                    `<span class="text-[10px] bg-blue-500/20 text-blue-300 px-1.5 py-0.5 rounded ml-2 rtl:mr-2">📍 ${item.locationSent}</span>` : '';
+                let locationTag = item.locationSent ? 
+                    `<div class="inline-block mt-2 text-xs bg-blue-500/20 text-blue-300 px-2 py-1 rounded-md border border-blue-500/30 font-bold">
+                        <i class="fas fa-map-marker-alt"></i> ${translations[currentLang].lblSentLocation} ${item.locationSent}
+                    </div>` : '';
 
-                div.innerHTML = `
-                    <div class="flex items-center flex-1 overflow-hidden cursor-pointer" onclick="!selectionMode && fillInput('${item.phone}', '${item.name || ''}')">
-                        ${checkboxHTML}
-                        <div class="overflow-hidden">
-                            <div class="font-bold tracking-wider truncate flex items-center" dir="ltr">
-                                ${item.phone} ${locBadge}
-                            </div>
-                            ${item.name ? `<div class="text-xs opacity-70 truncate">${item.name}</div>` : ''}
+                let notesSection = item.notes ? 
+                    `<div class="mt-3 pt-3 border-t border-white/10">
+                        <p class="text-xs text-[#25D366] font-bold mb-1"><i class="fas fa-sticky-note"></i> ${translations[currentLang].notesLabel}:</p>
+                        <p class="text-sm text-white opacity-90 whitespace-pre-wrap">${item.notes}</p>
+                    </div>` : '';
+
+                card.innerHTML = `
+                    ${checkboxHTML}
+                    <div class="flex justify-between items-start mb-2">
+                        <div class="text-xs text-white opacity-50 font-bold">${translations[currentLang].lblAdded} ${dateStr}، ${timeStr}</div>
+                        <div class="flex gap-2 ${selectionMode ? 'hidden' : ''}">
+                            <button onclick="openEditHistoryModal('${item.id}')" class="bg-blue-500/20 hover:bg-blue-500 text-blue-300 hover:text-white w-7 h-7 rounded transition flex items-center justify-center">
+                                <i class="fas fa-pen text-xs"></i>
+                            </button>
+                            <button onclick="confirmDelete('${item.id}')" class="bg-red-500/20 hover:bg-red-500 text-red-300 hover:text-white w-7 h-7 rounded transition flex items-center justify-center">
+                                <i class="fas fa-trash text-xs"></i>
+                            </button>
                         </div>
                     </div>
-                    <div class="flex gap-3 px-2 ${selectionMode ? 'hidden' : ''} shrink-0">
-                        <button onclick="openEditModal('${item.id}')" class="text-blue-400 hover:text-blue-300 transition">
-                            <i class="fas fa-pen"></i>
-                        </button>
-                        <button onclick="confirmDelete('${item.id}')" class="text-red-400 hover:text-red-300 transition">
-                            <i class="fas fa-trash"></i>
-                        </button>
+                    
+                    <div class="font-black text-2xl text-white mb-1" dir="ltr" style="text-align: ${currentLang === 'ar' ? 'right' : 'left'}">+${item.phone}</div>
+                    
+                    ${item.name ? `<div class="font-bold text-md text-[#25D366]">${item.name}</div>` : ''}
+                    ${locationTag}
+                    ${notesSection}
+                    
+                    <!-- Action Bar Overlay for direct messaging from history -->
+                    <div class="mt-4 flex gap-2">
+                        <a href="https://wa.me/${item.phone}" class="flex-1 bg-white/10 hover:bg-[#25D366] hover:text-white text-gray-300 text-center py-2 rounded-lg font-bold text-sm transition transition-colors">
+                            <i class="fab fa-whatsapp"></i> مراسلة
+                        </a>
                     </div>
                 `;
-                list.appendChild(div);
+                list.appendChild(card);
             });
         }
 
-        function fillInput(phone, name) {
-            document.getElementById('phoneInput').value = phone;
-            document.getElementById('nameHint').value = name;
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-
-        // --- Multi Selection UI ---
+        // --- History Modals & Multi-Select ---
         function toggleSelectionUI() {
             selectionMode = !selectionMode;
             selectedIds.clear();
             const bar = document.getElementById('multiDeleteBar');
+            bar.classList.toggle('hidden', !selectionMode);
             
-            if (selectionMode) {
-                bar.classList.remove('hidden');
-            } else {
-                bar.classList.add('hidden');
-            }
-            
-            renderHistory();
+            renderHistoryDetailed();
             updateSelectedCount();
         }
 
         function toggleSelection(id, isChecked) {
-            if (isChecked) {
-                selectedIds.add(id);
-            } else {
-                selectedIds.delete(id);
-            }
+            isChecked ? selectedIds.add(id) : selectedIds.delete(id);
             updateSelectedCount();
         }
 
         function updateSelectedCount() {
-            const text = document.getElementById('selectedCountText');
-            text.innerText = currentLang === 'ar' ? `${selectedIds.size} محدد` : `${selectedIds.size} Selected`;
+            document.getElementById('selectedCountText').innerText = currentLang === 'ar' ? `${selectedIds.size} محدد` : `${selectedIds.size} Selected`;
         }
 
-        // --- Modals Logic (Edit & Delete) ---
-        function openEditModal(id) {
+        function openEditHistoryModal(id) {
             const item = history.find(h => h.id === id);
             if (!item) return;
-            document.getElementById('editId').value = item.id;
-            document.getElementById('editPhone').value = item.phone;
-            document.getElementById('editName').value = item.name || '';
-            document.getElementById('editNameWarning').classList.add('hidden');
+            document.getElementById('editHistId').value = item.id;
+            document.getElementById('editHistPhone').value = item.phone;
+            document.getElementById('editHistName').value = item.name || '';
+            document.getElementById('editHistNotes').value = item.notes || '';
             
-            const modal = document.getElementById('editModal');
-            const content = document.getElementById('editModalContent');
+            const modal = document.getElementById('editHistoryModal');
+            const content = document.getElementById('editHistoryModalContent');
             modal.classList.remove('hidden');
             setTimeout(() => content.classList.remove('scale-95'), 10);
         }
 
-        function closeEditModal() {
-            const modal = document.getElementById('editModal');
-            const content = document.getElementById('editModalContent');
+        function closeEditHistoryModal() {
+            const modal = document.getElementById('editHistoryModal');
+            const content = document.getElementById('editHistoryModalContent');
             content.classList.add('scale-95');
             setTimeout(() => modal.classList.add('hidden'), 300);
         }
 
-        function saveEdit() {
-            const id = document.getElementById('editId').value;
-            const phone = document.getElementById('editPhone').value.trim().replace(/\s+/g, '');
-            const name = document.getElementById('editName').value.trim();
+        function saveHistoryEdit() {
+            const id = document.getElementById('editHistId').value;
+            const phone = document.getElementById('editHistPhone').value.trim().replace(/\s+/g, '');
+            const name = document.getElementById('editHistName').value.trim();
+            const notes = document.getElementById('editHistNotes').value.trim();
             
-            if (!phone) return;
+            if (!phone) { showToast(translations[currentLang].errorEmptyPhone, true); return; }
+            if (name.length > 12) { showToast(translations[currentLang].errorNameLength, true); return; }
 
             const index = history.findIndex(h => h.id === id);
             if (index > -1) {
                 history[index].phone = phone;
                 history[index].name = name;
+                history[index].notes = notes;
                 localStorage.setItem('0xh_history', JSON.stringify(history));
-                renderHistory();
+                renderHistoryDetailed();
             }
-            closeEditModal();
+            closeEditHistoryModal();
+            showToast(currentLang === 'ar' ? 'تم الحفظ' : 'Saved', false);
         }
 
-        function confirmDelete(id) {
-            itemToDelete = id;
-            showDeleteModal();
-        }
-
-        function confirmDeleteAll() {
-            if (history.length === 0) return;
-            itemToDelete = 'ALL';
-            showDeleteModal();
-        }
-
-        function executeMultiDelete() {
-            if (selectedIds.size === 0) return;
-            itemToDelete = 'MULTI';
-            showDeleteModal();
-        }
+        function confirmDelete(id) { itemToDelete = id; showDeleteModal(); }
+        function confirmDeleteAll() { if (history.length === 0) return; itemToDelete = 'ALL'; showDeleteModal(); }
+        function executeMultiDelete() { if (selectedIds.size === 0) return; itemToDelete = 'MULTI'; showDeleteModal(); }
 
         function showDeleteModal() {
             const modal = document.getElementById('deleteModal');
@@ -969,11 +1092,11 @@
                 }
                 
                 localStorage.setItem('0xh_history', JSON.stringify(history));
-                renderHistory();
+                renderHistoryDetailed();
                 closeDeleteModal();
+                showToast(currentLang === 'ar' ? 'تم الحذف' : 'Deleted', false);
             };
         }
-
         function closeDeleteModal() {
             const modal = document.getElementById('deleteModal');
             const content = document.getElementById('deleteModalContent');
